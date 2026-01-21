@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import { useAuthStore } from '@/lib/auth-store';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
+import { ChartLine, GearSix, SignOut, Users } from '@phosphor-icons/react';
 
 export function AdminSidebar() {
   const pathname = usePathname();
@@ -14,17 +15,17 @@ export function AdminSidebar() {
     {
       label: 'Dashboard',
       href: '/admin/dashboard',
-      icon: '📊',
+      icon: ChartLine,
     },
     {
       label: 'Clientes',
       href: '/admin/clients',
-      icon: '👥',
+      icon: Users,
     },
     {
       label: 'Configuración',
       href: '/admin/settings',
-      icon: '⚙️',
+      icon: GearSix,
     },
   ];
 
@@ -40,8 +41,9 @@ export function AdminSidebar() {
       <nav className="flex-1 p-4 space-y-2">
         {navItems.map((item) => {
           const isActive = pathname === item.href;
+          const Icon = item.icon;
           return (
-            <Link key={item.href} href={item.href}>
+            <Link key={item.href} href={item.href} aria-label={item.label}>
               <div
                 className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
                   isActive
@@ -49,7 +51,7 @@ export function AdminSidebar() {
                     : 'hover:bg-gray-800 text-gray-300'
                 }`}
               >
-                <span className="text-xl">{item.icon}</span>
+                <Icon size={20} weight="bold" aria-hidden="true" />
                 <span className="font-medium">{item.label}</span>
               </div>
             </Link>
@@ -71,7 +73,10 @@ export function AdminSidebar() {
           className="w-full border-gray-700 hover:bg-gray-800"
           onClick={logout}
         >
-          🚪 Cerrar Sesión
+          <span className="flex items-center justify-center gap-2">
+            <SignOut size={18} weight="bold" aria-hidden="true" />
+            Cerrar Sesión
+          </span>
         </Button>
       </div>
     </aside>

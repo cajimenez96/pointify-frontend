@@ -26,7 +26,7 @@ export default function Home() {
             </Button>
           </Link>
           
-          <Link href="/admin/dashboard" className="block">
+          <Link href="/admin/login" className="block">
             <Button className="w-full h-14 text-lg" variant="secondary" size="lg">
               ⚙️ Panel Admin
             </Button>
