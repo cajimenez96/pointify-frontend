@@ -98,15 +98,15 @@ export default function UsersPage() {
   };
 
   const handleCompanyFilter = (companyId: string) => {
-    const value = companyId === "all" ? undefined : companyId;
-    setSelectedCompanyFilter(value);
-    setFilters({ companyId: value, page: 1 });
+    setSelectedCompanyFilter(companyId);
+    const filterValue = companyId === "all" ? undefined : companyId;
+    setFilters({ companyId: filterValue, page: 1 });
   };
 
   const handleRoleFilter = (role: string) => {
-    const value = role === "all" ? undefined : (role as "admin" | "cashier");
-    setSelectedRoleFilter(value);
-    setFilters({ role: value, page: 1 });
+    setSelectedRoleFilter(role);
+    const filterValue = role === "all" ? undefined : (role as "admin" | "cashier");
+    setFilters({ role: filterValue, page: 1 });
   };
 
   if (isLoading || isLoadingCompanies) {

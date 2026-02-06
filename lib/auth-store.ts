@@ -11,7 +11,6 @@ export interface User {
   isSuperAdmin?: boolean;
   companyCode?: string;
   companyName?: string;
-  dni?: string;
 }
 
 interface AuthState {
@@ -107,7 +106,6 @@ export const useAuthStore = create<AuthStore>()(
               role: user.role as 'admin' | 'cashier',
               companyCode: user.companyCode,
               companyName: user.companyName,
-              dni: user.dni,
               isSuperAdmin: false,
             },
             accessToken: access_token,

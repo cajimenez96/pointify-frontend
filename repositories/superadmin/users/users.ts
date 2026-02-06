@@ -4,12 +4,12 @@
  */
 
 import apiClient from "@/lib/api-client";
+import { UserError } from "./types";
 import type {
   CreateUserBySuperAdminDto,
   QueryUsersDto,
   UserResponse,
   GetUsersResponse,
-  UserError,
 } from "./types";
 
 /**

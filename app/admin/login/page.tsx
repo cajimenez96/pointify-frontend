@@ -57,11 +57,11 @@ export default function AdminLoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-violet-50 to-purple-100 p-4">
       <Card className="w-full max-w-md p-8 space-y-6 shadow-xl">
         {/* Header */}
         <div className="text-center space-y-2">
-          <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl mx-auto flex items-center justify-center mb-4">
+          <div className="w-16 h-16 bg-gradient-to-br from-violet-600 to-purple-600 rounded-xl mx-auto flex items-center justify-center mb-4">
             <span className="text-3xl">📊</span>
           </div>
           <h1 className="text-3xl font-bold text-gray-900">Pointify</h1>
@@ -137,7 +137,7 @@ export default function AdminLoginPage() {
 
         {/* Footer */}
         <div className="text-center">
-          <Link href="/" className="text-sm text-blue-600 hover:underline">
+          <Link href="/" className="text-sm text-violet-600 hover:underline">
             ← Volver al inicio
           </Link>
         </div>

@@ -62,13 +62,15 @@ export interface RegisterClientDto {
   name: string;
   email?: string;
   phone?: string;
+  companyCode: string; // Required for public registration
 }
 
 export interface CompleteProfileDto {
   dni: string;
   name: string;
-  email?: string;
+  email: string;
   phone?: string;
+  companyCode: string; // Required to identify the company
 }
 
 export interface CompleteProfileResponse {

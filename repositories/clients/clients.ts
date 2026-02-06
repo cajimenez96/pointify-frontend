@@ -5,13 +5,13 @@
 
 import axios from 'axios';
 import { apiClient } from '@/lib/api-client';
+import { ClientError } from './types';
 import type {
   Client,
   ClientPublicResponse,
   RegisterClientDto,
   CompleteProfileDto,
   CompleteProfileResponse,
-  ClientError,
 } from './types';
 
 // ============================================================================

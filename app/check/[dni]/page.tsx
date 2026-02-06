@@ -113,7 +113,7 @@ export default function ClientPublicPage({ params }: PageProps) {
         <PointsHeader
           clientName={clientData.name}
           currentPoints={clientData.currentPoints}
-          companyName={clientData.companyInfo?.businessName || "Tu Empresa"}
+          companyName={clientData.company?.businessName || "Tu Empresa"}
           status={clientData.status}
         />
 

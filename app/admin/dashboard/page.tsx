@@ -64,7 +64,7 @@ export default function AdminDashboard() {
     return (
       <div className="flex items-center justify-center h-96">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-violet-600 mx-auto"></div>
           <p className="mt-4 text-gray-600">Cargando estadísticas...</p>
         </div>
       </div>
@@ -232,21 +232,21 @@ export default function AdminDashboard() {
           Resumen de Clientes
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="text-center p-4 bg-blue-50 rounded-lg">
+          <div className="text-center p-4 bg-violet-50 rounded-lg">
             <p className="text-sm text-gray-600">Total Clientes</p>
-            <p className="text-4xl font-bold text-blue-600 mt-2">
+            <p className="text-4xl font-bold text-violet-600 mt-2">
               {clients.length}
             </p>
           </div>
-          <div className="text-center p-4 bg-green-50 rounded-lg">
+          <div className="text-center p-4 bg-emerald-50 rounded-lg">
             <p className="text-sm text-gray-600">Clientes Activos</p>
-            <p className="text-4xl font-bold text-green-600 mt-2">
+            <p className="text-4xl font-bold text-emerald-600 mt-2">
               {activeClients}
             </p>
           </div>
-          <div className="text-center p-4 bg-yellow-50 rounded-lg">
+          <div className="text-center p-4 bg-amber-50 rounded-lg">
             <p className="text-sm text-gray-600">Shadow Users</p>
-            <p className="text-4xl font-bold text-yellow-600 mt-2">
+            <p className="text-4xl font-bold text-amber-600 mt-2">
               {shadowClients}
             </p>
           </div>

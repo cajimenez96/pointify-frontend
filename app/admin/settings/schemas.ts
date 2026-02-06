@@ -56,7 +56,7 @@ export const rewardSchema = z.object({
     .optional()
     .or(z.literal('')),
 
-  isUnlimitedStock: z.boolean().default(false),
+  isUnlimitedStock: z.boolean().optional(),
 });
 
 export type RewardForm = z.infer<typeof rewardSchema>;

@@ -50,13 +50,12 @@ export function useTransactionHistory(): UseTransactionHistoryReturn {
         page: params?.page || 1,
         limit: params?.limit || 10,
         type: params?.type,
-        dni: params?.dni,
       });
 
-      setTransactions(data.transactions);
-      setTotalTransactions(data.total);
-      setTotalPages(data.totalPages);
-      setCurrentPage(data.currentPage);
+      setTransactions(data.data);
+      setTotalTransactions(data.pagination.total);
+      setTotalPages(data.pagination.totalPages);
+      setCurrentPage(data.pagination.page);
     } catch (err: any) {
       const message = err.message || 'Error al cargar historial';
       setError(message);
@@ -73,15 +72,15 @@ export function useTransactionHistory(): UseTransactionHistoryReturn {
       setError(null);
 
       try {
-        const data: TransactionListResponse = await getClientTransactions(dni, {
+        const data = await getClientTransactions(dni, {
           page: params?.page || 1,
           limit: params?.limit || 10,
         });
 
-        setTransactions(data.transactions);
-        setTotalTransactions(data.total);
-        setTotalPages(data.totalPages);
-        setCurrentPage(data.currentPage);
+        setTransactions(data);
+        setTotalTransactions(data.length);
+        setTotalPages(1);
+        setCurrentPage(1);
       } catch (err: any) {
         const message = err.message || 'Error al cargar historial del cliente';
         setError(message);

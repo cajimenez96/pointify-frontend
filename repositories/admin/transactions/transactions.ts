@@ -4,15 +4,15 @@
  */
 
 import { apiClient } from '@/lib/api-client';
+import { TransactionError } from './types';
 import type {
+  Transaction,
   EarnPointsDto,
   RedeemPointsDto,
   EarnResponse,
   RedeemResponse,
-  Transaction,
   TransactionListResponse,
   QueryTransactionsDto,
-  TransactionError,
 } from './types';
 
 // ============================================================================
@@ -117,11 +117,13 @@ export async function getTransactions(
  * Get transaction history for a specific client
  */
 export async function getClientTransactions(
-  dni: string
+  dni: string,
+  query: { page?: number; limit?: number } = {}
 ): Promise<Transaction[]> {
   try {
     const { data } = await apiClient.get<Transaction[]>(
-      `/transactions/client/${dni}`
+      `/transactions/client/${dni}`,
+      { params: query }
     );
     return data;
   } catch (error: any) {

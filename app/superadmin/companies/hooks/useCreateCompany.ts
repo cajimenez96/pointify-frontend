@@ -4,10 +4,10 @@
 
 import { useState } from 'react';
 import { createCompany } from '@/repositories/superadmin/companies/companies';
+import { CompanyError } from '@/repositories/superadmin/companies/types';
 import type {
   CreateCompanyDto,
   CompanyResponse,
-  CompanyError,
 } from '@/repositories/superadmin/companies/types';
 
 interface UseCreateCompanyReturn {

@@ -8,8 +8,8 @@ import type {
   Company,
   QueryCompaniesDto,
   PaginationMeta,
-  CompanyError,
 } from '@/repositories/superadmin/companies/types';
+import { CompanyError } from '@/repositories/superadmin/companies/types';
 
 interface UseCompaniesReturn {
   companies: Company[];

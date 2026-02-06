@@ -4,6 +4,7 @@
  */
 
 import apiClient from '@/lib/api-client';
+import { CompanyError } from './types';
 import type {
   CreateCompanyDto,
   UpdateCompanyDto,
@@ -11,7 +12,6 @@ import type {
   CompaniesListResponse,
   CompanyResponse,
   ApiError,
-  CompanyError,
 } from './types';
 
 const BASE_PATH = '/superadmin/companies';

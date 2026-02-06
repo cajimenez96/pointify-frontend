@@ -4,6 +4,7 @@
  */
 
 import { apiClient } from '@/lib/api-client';
+import { SettingsError } from './types';
 import type {
   Settings,
   ProductPoints,
@@ -12,7 +13,6 @@ import type {
   Reward,
   CreateRewardDto,
   UpdateRewardDto,
-  SettingsError,
 } from './types';
 
 // ============================================================================
