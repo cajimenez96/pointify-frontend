@@ -1,3 +1,9 @@
+/**
+ * POS Page - Redesigned with Dual Mode
+ * EARN mode: Add points to clients
+ * REDEEM mode: Exchange points for rewards
+ */
+
 "use client";
 
 import { useState } from "react";
@@ -10,7 +16,10 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import apiClient from "@/lib/api-client";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Plus, Gift, LogOut, Store } from "lucide-react";
+import { EarnTab } from "./components/EarnTab";
+import { RedeemTab } from "./components/RedeemTab";
 
 // Schema de login
 const loginSchema = z.object({
@@ -21,37 +30,17 @@ const loginSchema = z.object({
 
 type LoginForm = z.infer<typeof loginSchema>;
 
-// Schema de transacción
-const transactionSchema = z.object({
-  dni: z.string().min(7, "DNI inválido"),
-  saleCode: z.string().min(1, "Código de venta requerido"),
-});
-
-type TransactionForm = z.infer<typeof transactionSchema>;
-
 export default function POSPage() {
   const { user, loginTenant, logout } = useAuthStore();
   const [isLoggingIn, setIsLoggingIn] = useState(false);
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [result, setResult] = useState<any>(null);
 
   // Formulario de login
   const {
-    register: registerLogin,
-    handleSubmit: handleSubmitLogin,
-    formState: { errors: loginErrors },
+    register,
+    handleSubmit,
+    formState: { errors },
   } = useForm<LoginForm>({
     resolver: zodResolver(loginSchema),
-  });
-
-  // Formulario de transacción
-  const {
-    register: registerTransaction,
-    handleSubmit: handleSubmitTransaction,
-    formState: { errors: transactionErrors },
-    reset: resetTransaction,
-  } = useForm<TransactionForm>({
-    resolver: zodResolver(transactionSchema),
   });
 
   // Manejo de login
@@ -72,104 +61,83 @@ export default function POSPage() {
     }
   };
 
-  // Manejo de transacción
-  const onAddPoints = async (data: TransactionForm) => {
-    setIsProcessing(true);
-    setResult(null);
-
-    try {
-      const response = await apiClient.post("/transactions/add", {
-        dni: data.dni,
-        saleCode: data.saleCode,
-      });
-
-      setResult(response.data);
-      resetTransaction();
-
-      toast.success(response.data.message || "Puntos agregados exitosamente");
-    } catch (error: any) {
-      // El interceptor ya muestra el toast de error
-      console.error("Error en transacción:", error);
-    } finally {
-      setIsProcessing(false);
-    }
-  };
-
   // Vista de Login
   if (!user) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-orange-50 to-amber-100 p-4">
-        <Card className="w-full max-w-md p-8 space-y-6 shadow-xl">
+      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-900 to-slate-800 p-4">
+        <Card className="w-full max-w-md p-8 space-y-6 shadow-2xl border-slate-700 bg-slate-900/90">
           {/* Header */}
           <div className="text-center space-y-2">
-            <div className="w-16 h-16 bg-gradient-to-br from-orange-600 to-amber-600 rounded-xl mx-auto flex items-center justify-center mb-4">
-              <span className="text-3xl">🛒</span>
+            <div className="w-16 h-16 bg-gradient-to-br from-violet-600 to-purple-600 rounded-full mx-auto flex items-center justify-center">
+              <Store className="h-8 w-8 text-white" />
             </div>
-            <h1 className="text-3xl font-bold text-gray-900">Punto de Venta</h1>
-            <p className="text-gray-600">Ingresa para cargar puntos</p>
+            <h1 className="text-3xl font-bold text-white">Punto de Venta</h1>
+            <p className="text-slate-400">Inicia sesión para continuar</p>
           </div>
 
-          {/* Formulario de Login */}
-          <form onSubmit={handleSubmitLogin(onLogin)} className="space-y-4">
-            {/* Company Code */}
-            <div className="space-y-2">
-              <Label htmlFor="companyCode">Código de Empresa</Label>
+          {/* Login Form */}
+          <form onSubmit={handleSubmit(onLogin)} className="space-y-4">
+            <div>
+              <Label htmlFor="companyCode" className="text-slate-300">
+                Código de Empresa
+              </Label>
               <Input
                 id="companyCode"
-                type="text"
-                placeholder="DEFAULT"
-                {...registerLogin("companyCode")}
+                {...register("companyCode")}
+                placeholder="ABC123"
+                className="mt-1 bg-slate-800 border-slate-700 text-white"
                 disabled={isLoggingIn}
-                autoFocus
               />
-              {loginErrors.companyCode && (
-                <p className="text-sm text-red-600">
-                  {loginErrors.companyCode.message}
+              {errors.companyCode && (
+                <p className="text-red-400 text-sm mt-1">
+                  {errors.companyCode.message}
                 </p>
               )}
             </div>
 
-            {/* Username */}
-            <div className="space-y-2">
-              <Label htmlFor="username">Usuario / DNI</Label>
+            <div>
+              <Label htmlFor="username" className="text-slate-300">
+                Usuario
+              </Label>
               <Input
                 id="username"
-                type="text"
-                placeholder="Ej: 87654321"
-                {...registerLogin("username")}
+                {...register("username")}
+                placeholder="Usuario"
+                className="mt-1 bg-slate-800 border-slate-700 text-white"
                 disabled={isLoggingIn}
               />
-              {loginErrors.username && (
-                <p className="text-sm text-red-600">
-                  {loginErrors.username.message}
+              {errors.username && (
+                <p className="text-red-400 text-sm mt-1">
+                  {errors.username.message}
                 </p>
               )}
             </div>
 
-            {/* Password */}
-            <div className="space-y-2">
-              <Label htmlFor="password">Contraseña</Label>
+            <div>
+              <Label htmlFor="password" className="text-slate-300">
+                Contraseña
+              </Label>
               <Input
                 id="password"
                 type="password"
-                placeholder="••••••••"
-                {...registerLogin("password")}
+                {...register("password")}
+                placeholder="******"
+                className="mt-1 bg-slate-800 border-slate-700 text-white"
                 disabled={isLoggingIn}
               />
-              {loginErrors.password && (
-                <p className="text-sm text-red-600">
-                  {loginErrors.password.message}
+              {errors.password && (
+                <p className="text-red-400 text-sm mt-1">
+                  {errors.password.message}
                 </p>
               )}
             </div>
 
-            {/* Submit */}
             <Button
               type="submit"
-              className="w-full h-12 text-lg bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700"
               disabled={isLoggingIn}
+              className="w-full h-12 bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700"
             >
-              {isLoggingIn ? "Ingresando..." : "Iniciar Sesión"}
+              {isLoggingIn ? "Iniciando..." : "Iniciar Sesión"}
             </Button>
           </form>
         </Card>
@@ -177,106 +145,71 @@ export default function POSPage() {
     );
   }
 
-  // Vista POS (Autenticado)
+  // Vista Principal (Autenticado)
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-orange-50 to-amber-100 p-4">
-      <Card className="w-full max-w-2xl p-8">
-        {/* Header */}
-        <div className="flex justify-between items-center mb-6">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">Punto de Venta</h1>
-            <p className="text-gray-600">
-              {user.role === "cashier" ? "Cajero" : "Administrador"}:{" "}
-              {user.name || user.username}
-            </p>
-            <p className="text-sm text-gray-500">
-              Empresa: {user.companyName || user.companyCode}
-            </p>
-          </div>
-          <Button variant="outline" onClick={logout}>
-            Cerrar Sesión
-          </Button>
-        </div>
-
-        {/* Formulario de Transacción */}
-        <form
-          onSubmit={handleSubmitTransaction(onAddPoints)}
-          className="space-y-6"
-        >
-          {/* DNI del Cliente */}
-          <div className="space-y-2">
-            <Label htmlFor="dni" className="text-lg">
-              DNI del Cliente
-            </Label>
-            <Input
-              id="dni"
-              type="text"
-              placeholder="Ej: 11223344"
-              className="h-14 text-xl"
-              {...registerTransaction("dni")}
-              disabled={isProcessing}
-              autoFocus
-            />
-            {transactionErrors.dni && (
-              <p className="text-sm text-red-600">
-                {transactionErrors.dni.message}
-              </p>
-            )}
-          </div>
-
-          {/* Código de Venta */}
-          <div className="space-y-2">
-            <Label htmlFor="saleCode" className="text-lg">
-              Código de Venta
-            </Label>
-            <Input
-              id="saleCode"
-              type="text"
-              placeholder="Ej: SALE001"
-              className="h-14 text-xl"
-              {...registerTransaction("saleCode")}
-              disabled={isProcessing}
-            />
-            {transactionErrors.saleCode && (
-              <p className="text-sm text-red-600">
-                {transactionErrors.saleCode.message}
-              </p>
-            )}
-          </div>
-
-          {/* Resultado */}
-          {result && (
-            <div
-              className={`border px-4 py-3 rounded ${
-                result.rewardReached
-                  ? "bg-green-50 border-green-200 text-green-800"
-                  : "bg-blue-50 border-blue-200 text-blue-800"
-              }`}
-            >
-              <p className="font-bold text-lg">{result.message}</p>
-              <div className="mt-2 space-y-1 text-sm">
-                <p>Cliente: {result.client.name || result.client.dni}</p>
-                <p>Puntos actuales: {result.client.currentPoints}</p>
-                <p>Total acumulado: {result.client.totalAccumulated}</p>
-                {result.client.status === "PENDING" && (
-                  <p className="text-orange-600 font-semibold">
-                    ⚠️ Cliente pendiente de completar registro
-                  </p>
-                )}
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 p-4 md:p-8">
+      {/* Header */}
+      <header className="mb-8">
+        <Card className="p-4 border-slate-700 bg-slate-900/50">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="h-12 w-12 bg-gradient-to-br from-violet-600 to-purple-600 rounded-full flex items-center justify-center">
+                <Store className="h-6 w-6 text-white" />
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold text-white">
+                  Punto de Venta
+                </h1>
+                <p className="text-slate-400 text-sm">
+                  Usuario: <span className="text-white">{user.username}</span>
+                </p>
               </div>
             </div>
-          )}
 
-          {/* Botón Submit */}
-          <Button
-            type="submit"
-            className="w-full h-14 text-xl bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700"
-            disabled={isProcessing}
-          >
-            {isProcessing ? "Procesando..." : "Agregar Puntos"}
-          </Button>
-        </form>
-      </Card>
+            <Button
+              variant="outline"
+              onClick={() => {
+                logout();
+                toast.info("Sesión cerrada");
+              }}
+              className="border-slate-600 text-slate-300 hover:bg-slate-800"
+            >
+              <LogOut className="h-5 w-5 mr-2" />
+              Cerrar Sesión
+            </Button>
+          </div>
+        </Card>
+      </header>
+
+      {/* Main Content - Tabs */}
+      <div className="max-w-5xl mx-auto">
+        <Tabs defaultValue="earn" className="w-full">
+          <TabsList className="grid w-full grid-cols-2 mb-6 bg-slate-800 border border-slate-700">
+            <TabsTrigger
+              value="earn"
+              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-green-600 data-[state=active]:to-emerald-600 data-[state=active]:text-white"
+            >
+              <Plus className="h-5 w-5 mr-2" />
+              Sumar Puntos
+            </TabsTrigger>
+            <TabsTrigger
+              value="redeem"
+              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-violet-600 data-[state=active]:to-purple-600 data-[state=active]:text-white"
+            >
+              <Gift className="h-5 w-5 mr-2" />
+              Canjear Premio
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="earn">
+            <EarnTab />
+          </TabsContent>
+
+          <TabsContent value="redeem">
+            <RedeemTab />
+          </TabsContent>
+        </Tabs>
+      </div>
     </div>
   );
 }

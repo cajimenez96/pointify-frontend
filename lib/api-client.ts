@@ -115,4 +115,8 @@ apiClient.interceptors.response.use(
   }
 );
 
+// Named export for repository pattern
+export { apiClient };
+
+// Default export for backwards compatibility
 export default apiClient;
