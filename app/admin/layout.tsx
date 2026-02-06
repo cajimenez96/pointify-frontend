@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { useAuthStore } from '@/lib/auth-store';
-import { AdminSidebar } from '@/components/admin/admin-sidebar';
+import { useEffect } from "react";
+import { useRouter, usePathname } from "next/navigation";
+import { useAuthStore } from "@/lib/auth-store";
+import { AdminSidebar } from "@/components/admin/admin-sidebar";
 
 export default function AdminLayout({
   children,
@@ -12,16 +12,18 @@ export default function AdminLayout({
 }) {
   const { user, isLoading, initializeAuth } = useAuthStore();
   const router = useRouter();
+  const pathname = usePathname();
+  const isLoginPage = pathname === "/admin/login";
 
   useEffect(() => {
     initializeAuth();
   }, [initializeAuth]);
 
   useEffect(() => {
-    if (!isLoading && (!user || user.role !== 'admin')) {
-      router.push('/admin/login');
+    if (!isLoginPage && !isLoading && (!user || user.role !== "admin")) {
+      router.push("/admin/login");
     }
-  }, [user, isLoading, router]);
+  }, [user, isLoading, router, isLoginPage]);
 
   if (isLoading) {
     return (
@@ -34,7 +36,13 @@ export default function AdminLayout({
     );
   }
 
-  if (!user || user.role !== 'admin') {
+  // Si estamos en login, renderizar sin sidebar
+  if (isLoginPage) {
+    return <>{children}</>;
+  }
+
+  // Si no hay usuario y no es login, no renderizar nada (el useEffect redirige)
+  if (!user || user.role !== "admin") {
     return null;
   }
 

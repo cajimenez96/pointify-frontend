@@ -17,7 +17,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Plus, Gift, LogOut, Store } from "lucide-react";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { Plus, Gift, LogOut, Store, QrCode } from "lucide-react";
+import { CompanyQR } from "@/components/shared/CompanyQR";
 import { EarnTab } from "./components/EarnTab";
 import { RedeemTab } from "./components/RedeemTab";
 
@@ -166,17 +168,37 @@ export default function POSPage() {
               </div>
             </div>
 
-            <Button
-              variant="outline"
-              onClick={() => {
-                logout();
-                toast.info("Sesión cerrada");
-              }}
-              className="border-slate-600 text-slate-300 hover:bg-slate-800"
-            >
-              <LogOut className="h-5 w-5 mr-2" />
-              Cerrar Sesión
-            </Button>
+            <div className="flex items-center gap-2">
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    className="text-slate-300 hover:text-white hover:bg-slate-800"
+                    title="Ver QR Cliente"
+                  >
+                    <QrCode className="h-6 w-6" />
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-md bg-white text-slate-900 border-none">
+                  <CompanyQR
+                    companyCode={user.companyCode || ""}
+                    companyName={user.companyName || "Tu Empresa"}
+                  />
+                </DialogContent>
+              </Dialog>
+
+              <Button
+                variant="outline"
+                onClick={() => {
+                  logout();
+                  toast.info("Sesión cerrada");
+                }}
+                className="border-slate-600 text-slate-300 hover:bg-slate-800"
+              >
+                <LogOut className="h-5 w-5 mr-2" />
+                Cerrar Sesión
+              </Button>
+            </div>
           </div>
         </Card>
       </header>

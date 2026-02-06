@@ -45,9 +45,12 @@ apiClient.interceptors.response.use(
 
     // 401 Unauthorized: Token inválido o expirado
     if (status === 401) {
-      console.warn('[API Client] 401 Unauthorized - Token inválido o expirado');
+      console.warn('[API Client] 401 Unauthorized');
       
-      if (typeof window !== 'undefined') {
+      // Evitar redirección si el error viene de un intento de login
+      const isLoginRequest = error.config?.url?.includes('/login');
+      
+      if (!isLoginRequest && typeof window !== 'undefined') {
         // Limpiar localStorage
         localStorage.removeItem('pointify-auth-storage');
         

@@ -3,9 +3,7 @@
  * Zod schemas for products and rewards management
  */
 
-import { z } from 'z
-
-';
+import { z } from 'zod';
 
 // ============================================================================
 // PRODUCT SCHEMAS

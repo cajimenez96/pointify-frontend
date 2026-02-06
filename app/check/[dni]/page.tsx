@@ -6,22 +6,24 @@
 
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, use } from "react";
 import { useSearchParams } from "next/navigation";
 import { Card } from "@/components/ui/card";
 import { AlertCircle, QrCode } from "lucide-react";
-import { useClientPublic } from "../../hooks/useClientPublic";
+import { useClientPublic } from "../hooks/useClientPublic";
 import { PointsHeader } from "./components/PointsHeader";
 import { RewardsCatalog } from "./components/RewardsCatalog";
 
+import { ClientRegistrationForm } from "./components/ClientRegistrationForm";
+
 interface PageProps {
-  params: {
+  params: Promise<{
     dni: string;
-  };
+  }>;
 }
 
 export default function ClientPublicPage({ params }: PageProps) {
-  const { dni } = params;
+  const { dni } = use(params);
   const searchParams = useSearchParams();
   const companyCode = searchParams.get("companyCode");
 
@@ -82,6 +84,17 @@ export default function ClientPublicPage({ params }: PageProps) {
           </p>
         </Card>
       </div>
+    );
+  }
+
+  // PENDING State: Show Registration Form
+  if (clientData.status === "PENDING") {
+    return (
+      <ClientRegistrationForm
+        dni={dni}
+        companyCode={companyCode}
+        onSuccess={() => fetchClient(dni, companyCode)}
+      />
     );
   }
 
