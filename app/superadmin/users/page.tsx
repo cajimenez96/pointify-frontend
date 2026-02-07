@@ -26,7 +26,7 @@ import {
 import { SearchInput } from "@/components/ui/search-input";
 import { useUsers } from "./hooks/useUsers";
 import { useCreateUser } from "./hooks/useCreateUser";
-import { useCompanies } from "../companies/hooks/useCompanies";
+// import { useCompanies } from "../companies/hooks/useCompanies";
 import type { CreateUserBySuperAdminDto } from "@/repositories/superadmin/users/types";
 
 // Schema de validación basado en CreateUserBySuperAdminDto
@@ -105,7 +105,8 @@ export default function UsersPage() {
 
   const handleRoleFilter = (role: string) => {
     setSelectedRoleFilter(role);
-    const filterValue = role === "all" ? undefined : (role as "admin" | "cashier");
+    const filterValue =
+      role === "all" ? undefined : (role as "admin" | "cashier");
     setFilters({ role: filterValue, page: 1 });
   };
 
