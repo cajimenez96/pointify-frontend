@@ -38,6 +38,15 @@ export interface CreateUserBySuperAdminDto {
   role: "admin" | "cashier";
 }
 
+export interface UpdateUserDto {
+  username?: string;
+  password?: string;
+  name?: string;
+  dni?: string;
+  role?: "admin" | "cashier";
+  isActive?: boolean;
+}
+
 export interface QueryUsersDto {
   companyId?: string;
   username?: string;

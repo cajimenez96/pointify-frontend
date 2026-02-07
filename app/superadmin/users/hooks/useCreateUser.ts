@@ -1,60 +1,24 @@
 /**
- * Hook for creating a new user
+ * Hook for creating a new user with TanStack Query
  */
 
-import { useState } from "react";
-import { createUser } from "@/repositories/superadmin/users/users";
-import { UserError } from "@/repositories/superadmin/users/types";
-import type {
-  CreateUserBySuperAdminDto,
-  UserResponse,
-} from "@/repositories/superadmin/users/types";
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
+import { createUser } from '@/repositories/superadmin/users/users';
+import type { CreateUserBySuperAdminDto } from '@/repositories/superadmin/users/types';
 
-interface UseCreateUserReturn {
-  createUserMutation: (
-    dto: CreateUserBySuperAdminDto
-  ) => Promise<UserResponse>;
-  isCreating: boolean;
-  error: string | null;
-  createdUser: UserResponse | null;
-  reset: () => void;
-}
+export function useCreateUserMutation() {
+  const queryClient = useQueryClient();
 
-export function useCreateUser(): UseCreateUserReturn {
-  const [isCreating, setIsCreating] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [createdUser, setCreatedUser] = useState<UserResponse | null>(null);
-
-  const createUserMutation = async (
-    dto: CreateUserBySuperAdminDto
-  ): Promise<UserResponse> => {
-    setIsCreating(true);
-    setError(null);
-
-    try {
-      const user = await createUser(dto);
-      setCreatedUser(user);
-      return user;
-    } catch (err) {
-      const errorMessage =
-        err instanceof UserError ? err.message : "Error al crear usuario";
-      setError(errorMessage);
-      throw err;
-    } finally {
-      setIsCreating(false);
-    }
-  };
-
-  const reset = () => {
-    setError(null);
-    setCreatedUser(null);
-  };
-
-  return {
-    createUserMutation,
-    isCreating,
-    error,
-    createdUser,
-    reset,
-  };
+  return useMutation({
+    mutationFn: (dto: CreateUserBySuperAdminDto) => createUser(dto),
+    onSuccess: () => {
+      // Invalidate users query to trigger refetch
+      queryClient.invalidateQueries({ queryKey: ['users'] });
+      toast.success('Usuario creado exitosamente');
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || 'Error al crear usuario');
+    },
+  });
 }
