@@ -66,7 +66,7 @@ export function AdminSidebar() {
       <div className="p-4">
         <div className="bg-slate-800 rounded-lg p-4 mb-4">
           <p className="text-sm text-slate-400">Sesión activa</p>
-          <p className="font-semibold">{user?.name || user?.dni}</p>
+          <p className="font-semibold">{user?.name || user?.username}</p>
           <p className="text-xs text-violet-400 capitalize">{user?.role}</p>
         </div>
 

@@ -1,6 +1,5 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import apiClient from './api-client';
 
 // Tipos de usuario
 export interface User {
@@ -21,19 +20,8 @@ interface AuthState {
 }
 
 interface AuthActions {
-  // Login SuperAdmin
-  loginSuperAdmin: (username: string, password: string) => Promise<void>;
-  
-  // Login Tenant (Admin/Cajero)
-  loginTenant: (companyCode: string, username: string, password: string) => Promise<void>;
-  
-  // Logout
   logout: () => void;
-  
-  // Inicializar autenticación desde localStorage
   initializeAuth: () => void;
-  
-  // Setters internos
   setAuth: (user: User, accessToken: string) => void;
   clearAuth: () => void;
 }
@@ -52,7 +40,7 @@ export const useAuthStore = create<AuthStore>()(
       // Inicializar autenticación (se llama al cargar la app)
       initializeAuth: () => {
         const state = get();
-        
+
         if (state.user && state.accessToken) {
           set({ isAuthenticated: true, isLoading: false });
         } else {
@@ -60,61 +48,22 @@ export const useAuthStore = create<AuthStore>()(
         }
       },
 
-      // Login SuperAdmin
-      loginSuperAdmin: async (username: string, password: string) => {
-        try {
-          const response = await apiClient.post('/auth/superadmin/login', {
-            username,
-            password,
-          });
-
-          const { access_token, user } = response.data;
-
-          set({
-            user: {
-              id: user.id,
-              username: user.username,
-              name: user.name,
-              role: 'superadmin',
-              isSuperAdmin: true,
-            },
-            accessToken: access_token,
-            isAuthenticated: true,
-          });
-        } catch (error) {
-          console.error('[AuthStore] Error en loginSuperAdmin:', error);
-          throw error;
-        }
+      // Establecer autenticación (llamado por hooks de login)
+      setAuth: (user: User, accessToken: string) => {
+        set({
+          user,
+          accessToken,
+          isAuthenticated: true,
+        });
       },
 
-      // Login Tenant (Admin/Cajero)
-      loginTenant: async (companyCode: string, username: string, password: string) => {
-        try {
-          const response = await apiClient.post('/auth/login', {
-            companyCode,
-            username,
-            password,
-          });
-
-          const { access_token, user } = response.data;
-
-          set({
-            user: {
-              id: user.id,
-              username: user.username,
-              name: user.name,
-              role: user.role as 'admin' | 'cashier',
-              companyCode: user.companyCode,
-              companyName: user.companyName,
-              isSuperAdmin: false,
-            },
-            accessToken: access_token,
-            isAuthenticated: true,
-          });
-        } catch (error) {
-          console.error('[AuthStore] Error en loginTenant:', error);
-          throw error;
-        }
+      // Limpiar autenticación
+      clearAuth: () => {
+        set({
+          user: null,
+          accessToken: null,
+          isAuthenticated: false,
+        });
       },
 
       // Logout
@@ -125,27 +74,9 @@ export const useAuthStore = create<AuthStore>()(
           isAuthenticated: false,
         });
 
-        // Redirigir a login
         if (typeof window !== 'undefined') {
           window.location.href = '/';
         }
-      },
-
-      // Setters internos (para uso futuro si es necesario)
-      setAuth: (user: User, accessToken: string) => {
-        set({
-          user,
-          accessToken,
-          isAuthenticated: true,
-        });
-      },
-
-      clearAuth: () => {
-        set({
-          user: null,
-          accessToken: null,
-          isAuthenticated: false,
-        });
       },
     }),
     {

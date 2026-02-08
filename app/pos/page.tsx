@@ -1,20 +1,14 @@
 /**
- * POS Page - Redesigned with Dual Mode
+ * POS Page - Dual Mode (Login / Authenticated)
  * EARN mode: Add points to clients
  * REDEEM mode: Exchange points for rewards
  */
 
 "use client";
 
-import { useState } from "react";
 import { useAuthStore } from "@/lib/auth-store";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import { toast } from "sonner";
 import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
@@ -22,128 +16,44 @@ import { Plus, Gift, LogOut, Store, QrCode } from "lucide-react";
 import { CompanyQR } from "@/components/shared/CompanyQR";
 import { EarnTab } from "./components/EarnTab";
 import { RedeemTab } from "./components/RedeemTab";
-
-// Schema de login
-const loginSchema = z.object({
-  companyCode: z.string().min(3, "Código de empresa requerido"),
-  username: z.string().min(3, "Usuario requerido"),
-  password: z.string().min(6, "Contraseña requerida"),
-});
-
-type LoginForm = z.infer<typeof loginSchema>;
+import { LoginForm } from "@/components/shared/LoginForm";
+import { tenantLoginSchema } from "@/repositories/auth/schemas";
+import type { TenantLoginForm } from "@/repositories/auth/schemas";
+import { useLoginPOSMutation } from "./hooks/useLoginPOS";
 
 export default function POSPage() {
-  const { user, loginTenant, logout } = useAuthStore();
-  const [isLoggingIn, setIsLoggingIn] = useState(false);
-
-  // Formulario de login
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<LoginForm>({
-    resolver: zodResolver(loginSchema),
-  });
-
-  // Manejo de login
-  const onLogin = async (data: LoginForm) => {
-    setIsLoggingIn(true);
-
-    try {
-      await loginTenant(data.companyCode, data.username, data.password);
-      toast.success("Sesión iniciada correctamente");
-    } catch (error: any) {
-      const errorMessage =
-        error.response?.data?.message ||
-        "Error al iniciar sesión. Verifica tus credenciales.";
-
-      toast.error(errorMessage);
-    } finally {
-      setIsLoggingIn(false);
-    }
-  };
+  const { user, logout } = useAuthStore();
+  const loginMutation = useLoginPOSMutation();
 
   // Vista de Login
   if (!user) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-900 to-slate-800 p-4">
-        <Card className="w-full max-w-md p-8 space-y-6 shadow-2xl border-slate-700 bg-slate-900/90">
-          {/* Header */}
-          <div className="text-center space-y-2">
-            <div className="w-16 h-16 bg-gradient-to-br from-violet-600 to-purple-600 rounded-full mx-auto flex items-center justify-center">
-              <Store className="h-8 w-8 text-white" />
-            </div>
-            <h1 className="text-3xl font-bold text-white">Punto de Venta</h1>
-            <p className="text-slate-400">Inicia sesión para continuar</p>
-          </div>
-
-          {/* Login Form */}
-          <form onSubmit={handleSubmit(onLogin)} className="space-y-4">
-            <div>
-              <Label htmlFor="companyCode" className="text-slate-300">
-                Código de Empresa
-              </Label>
-              <Input
-                id="companyCode"
-                {...register("companyCode")}
-                placeholder="ABC123"
-                className="mt-1 bg-slate-800 border-slate-700 text-white"
-                disabled={isLoggingIn}
-              />
-              {errors.companyCode && (
-                <p className="text-red-400 text-sm mt-1">
-                  {errors.companyCode.message}
-                </p>
-              )}
-            </div>
-
-            <div>
-              <Label htmlFor="username" className="text-slate-300">
-                Usuario
-              </Label>
-              <Input
-                id="username"
-                {...register("username")}
-                placeholder="Usuario"
-                className="mt-1 bg-slate-800 border-slate-700 text-white"
-                disabled={isLoggingIn}
-              />
-              {errors.username && (
-                <p className="text-red-400 text-sm mt-1">
-                  {errors.username.message}
-                </p>
-              )}
-            </div>
-
-            <div>
-              <Label htmlFor="password" className="text-slate-300">
-                Contraseña
-              </Label>
-              <Input
-                id="password"
-                type="password"
-                {...register("password")}
-                placeholder="******"
-                className="mt-1 bg-slate-800 border-slate-700 text-white"
-                disabled={isLoggingIn}
-              />
-              {errors.password && (
-                <p className="text-red-400 text-sm mt-1">
-                  {errors.password.message}
-                </p>
-              )}
-            </div>
-
-            <Button
-              type="submit"
-              disabled={isLoggingIn}
-              className="w-full h-12 bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700"
-            >
-              {isLoggingIn ? "Iniciando..." : "Iniciar Sesión"}
-            </Button>
-          </form>
-        </Card>
-      </div>
+      <LoginForm<TenantLoginForm>
+        schema={tenantLoginSchema}
+        fields={[
+          {
+            name: "companyCode",
+            label: "Código de Empresa",
+            placeholder: "Código de empresa",
+          },
+          {
+            name: "username",
+            label: "Usuario",
+            placeholder: "Usuario",
+          },
+          {
+            name: "password",
+            label: "Contraseña",
+            type: "password",
+            placeholder: "Contraseña",
+          },
+        ]}
+        onSubmit={(data) => loginMutation.mutate(data)}
+        isSubmitting={loginMutation.isPending}
+        icon={<Store className="h-7 w-7 text-primary" />}
+        title="Punto de Venta"
+        subtitle="Inicia sesión para continuar"
+      />
     );
   }
 
