@@ -37,7 +37,7 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
-  
+
   /* Status Colors */
   --color-info: var(--info);
   --color-success: var(--success);
@@ -89,23 +89,23 @@
   /* Pointify Shadcn Mapping */
   --background: #f6f9fc; /* Using gray-100 as bg? Or default white */
   --foreground: #172b4d; /* Default text color */
-  
+
   --card: #ffffff;
   --card-foreground: #172b4d;
-  
+
   --popover: #ffffff;
   --popover-foreground: #172b4d;
-  
+
   --primary-foreground: #ffffff;
-  
+
   --secondary-foreground: #ffffff;
-  
+
   --muted: #f6f9fc;
   --muted-foreground: #8898aa; /* gray-600 */
-  
+
   --accent: #f6f9fc;
   --accent-foreground: #172b4d;
-  
+
   --destructive: #f5365c; /* danger */
   --destructive-foreground: #ffffff;
 
@@ -120,11 +120,11 @@
   --chart-5: #fb6340;
 
   --sidebar: #ffffff;
-  --sidebar-foreground: #172b4d;
+  --sidebar-foreground: #6C757D;
   --sidebar-primary: #5e72e4;
   --sidebar-primary-foreground: #ffffff;
   --sidebar-accent: #f6f9fc;
-  --sidebar-accent-foreground: #172b4d;
+  --sidebar-accent-foreground: #212529;
   --sidebar-border: #dee2e6;
   --sidebar-ring: #5e72e4;
 }
@@ -133,28 +133,28 @@
   /* Dark mode overrides - keeping somewhat standard dark mode but aligned with new palette where possible */
   --background: #172b4d; /* default as background? */
   --foreground: #f6f9fc; /* gray-100 */
-  
+
   --card: #212529; /* gray-900 */
   --card-foreground: #f6f9fc;
-  
+
   --popover: #212529;
   --popover-foreground: #f6f9fc;
-  
+
   --primary: #5e72e4;
   --primary-foreground: #ffffff;
-  
+
   --secondary: #8392ab;
   --secondary-foreground: #ffffff;
-  
+
   --muted: #212529;
   --muted-foreground: #adb5bd; /* gray-500 */
-  
+
   --accent: #212529;
   --accent-foreground: #f6f9fc;
-  
+
   --destructive: #f5365c;
   --destructive-foreground: #ffffff;
-  
+
   --border: #32325d; /* gray-800 */
   --input: #32325d;
   --ring: #5e72e4;

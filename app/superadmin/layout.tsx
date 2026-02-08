@@ -3,15 +3,28 @@
 import { useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { useAuthStore } from "@/lib/auth-store";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import { AppSidebar } from "@/components/shared/AppSidebar";
+import {
+  SidebarInset,
+  SidebarProvider,
+  SidebarTrigger,
+} from "@/components/ui/sidebar";
+import { Separator } from "@/components/ui/separator";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 
 export default function SuperAdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const { user, isLoading, initializeAuth, logout } = useAuthStore();
+  const { user, isLoading, initializeAuth } = useAuthStore();
   const router = useRouter();
   const pathname = usePathname();
 
@@ -36,84 +49,43 @@ export default function SuperAdminLayout({
   // Loading state solo para rutas protegidas
   if (isLoading || !user) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-slate-900">
-        <div className="w-12 h-12 border-4 border-violet-600 border-t-transparent rounded-full animate-spin" />
+      <div className="flex min-h-screen items-center justify-center bg-background">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+          <p className="mt-4 text-muted-foreground">Cargando...</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="flex min-h-screen bg-slate-900">
-      {/* Sidebar */}
-      <aside className="w-64 bg-slate-800 border-r border-slate-700">
-        <div className="p-6">
-          {/* Logo */}
-          <div className="flex items-center gap-3 mb-8">
-            <div className="w-10 h-10 bg-gradient-to-br from-violet-600 to-purple-600 rounded-lg flex items-center justify-center">
-              <span className="text-xl">🔐</span>
-            </div>
-            <div>
-              <h1 className="text-white font-bold text-lg">Pointify</h1>
-              <p className="text-slate-400 text-xs">SuperAdmin</p>
-            </div>
+    <SidebarProvider>
+      <AppSidebar />
+      <SidebarInset>
+        <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12 border-b px-4">
+          <div className="flex items-center gap-2">
+            <SidebarTrigger className="-ml-1" />
+            <Separator orientation="vertical" className="mr-2 h-4" />
+            <Breadcrumb>
+              <BreadcrumbList>
+                <BreadcrumbItem className="hidden md:block">
+                  <BreadcrumbLink href="/superadmin/dashboard">
+                    Pointify SuperAdmin
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator className="hidden md:block" />
+                <BreadcrumbItem>
+                  <BreadcrumbPage>
+                    {pathname.split("/").pop()?.charAt(0).toUpperCase() +
+                      pathname.split("/").pop()!.slice(1)}
+                  </BreadcrumbPage>
+                </BreadcrumbItem>
+              </BreadcrumbList>
+            </Breadcrumb>
           </div>
-
-          {/* Navigation */}
-          <nav className="space-y-2">
-            <NavLink href="/superadmin/dashboard" icon="📊">
-              Dashboard
-            </NavLink>
-            <NavLink href="/superadmin/companies" icon="🏢">
-              Empresas
-            </NavLink>
-            <NavLink href="/superadmin/users" icon="👥">
-              Usuarios
-            </NavLink>
-          </nav>
-
-          {/* User Info */}
-          <div className="mt-auto pt-8 border-t border-slate-700">
-            <div className="text-slate-400 text-sm mb-4">
-              <p className="font-semibold text-white">
-                {user.name || user.username}
-              </p>
-              <p className="text-xs">Superadministrador</p>
-            </div>
-            <Button
-              variant="outline"
-              className="w-full border-slate-600 text-slate-300 hover:bg-slate-700"
-              onClick={logout}
-            >
-              Cerrar Sesión
-            </Button>
-          </div>
-        </div>
-      </aside>
-
-      {/* Main Content */}
-      <main className="flex-1 overflow-auto">
-        <div className="p-8">{children}</div>
-      </main>
-    </div>
-  );
-}
-
-function NavLink({
-  href,
-  icon,
-  children,
-}: {
-  href: string;
-  icon: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <Link
-      href={href}
-      className="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-300 hover:bg-slate-700 hover:text-white transition-colors"
-    >
-      <span className="text-xl">{icon}</span>
-      <span className="font-medium">{children}</span>
-    </Link>
+        </header>
+        <div className="flex flex-1 flex-col gap-4 p-4 pt-0">{children}</div>
+      </SidebarInset>
+    </SidebarProvider>
   );
 }
