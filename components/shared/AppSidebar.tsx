@@ -50,11 +50,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       url: "/admin/clients",
       icon: Users,
     },
-    {
-      title: "Gestión de Cajeros",
-      url: "/admin/cashiers",
-      icon: Store,
-    },
+    // {
+    //   title: "Gestión de Cajeros",
+    //   url: "/admin/cashiers",
+    //   icon: Store,
+    // },
     {
       title: "Configuración",
       url: "/admin/settings",

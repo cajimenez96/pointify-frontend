@@ -1,9 +1,9 @@
 /**
  * useProducts Hook
- * Manages product points configuration
+ * Manages product points configuration with TanStack Query
  */
 
-import { useState, useCallback, useEffect } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import {
   getActiveProducts,
@@ -17,86 +17,61 @@ import type {
   UpdateProductPointsDto,
 } from '@/repositories/admin/settings/types';
 
-interface UseProductsReturn {
-  products: ProductPoints[];
-  isLoading: boolean;
-  error: string | null;
-  refetch: () => Promise<void>;
-  createProductMutation: (dto: CreateProductDto) => Promise<void>;
-  updateProductMutation: (
-    productName: string,
-    dto: UpdateProductPointsDto
-  ) => Promise<void>;
-  deleteProductMutation: (productName: string) => Promise<void>;
-}
+export function useProducts() {
+  const queryClient = useQueryClient();
 
-export function useProducts(): UseProductsReturn {
-  const [products, setProducts] = useState<ProductPoints[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const productsQuery = useQuery<ProductPoints[]>({
+    queryKey: ['admin', 'products'],
+    queryFn: getActiveProducts,
+    staleTime: 5 * 60 * 1000,
+    refetchOnWindowFocus: true,
+  });
 
-  const fetchProducts = useCallback(async () => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      const data = await getActiveProducts();
-      setProducts(data);
-    } catch (err: any) {
-      const message = err.message || 'Error al cargar productos';
-      setError(message);
-      toast.error(message);
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
-
-  const createProductMutation = async (dto: CreateProductDto) => {
-    try {
-      await createProduct(dto);
+  const createMutation = useMutation({
+    mutationFn: (dto: CreateProductDto) => createProduct(dto),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin', 'products'] });
       toast.success('Producto creado exitosamente');
-      await fetchProducts(); // Refresh list
-    } catch (err: any) {
-      toast.error(err.message || 'Error al crear producto');
-      throw err;
-    }
-  };
+    },
+    onError: (error: Error) =>
+      toast.error(error.message || 'Error al crear producto'),
+  });
 
-  const updateProductMutation = async (
-    productName: string,
-    dto: UpdateProductPointsDto
-  ) => {
-    try {
-      await updateProductPoints(productName, dto);
+  const updateMutation = useMutation({
+    mutationFn: ({
+      productName,
+      dto,
+    }: {
+      productName: string;
+      dto: UpdateProductPointsDto;
+    }) => updateProductPoints(productName, dto),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin', 'products'] });
       toast.success('Producto actualizado exitosamente');
-      await fetchProducts();
-    } catch (err: any) {
-      toast.error(err.message || 'Error al actualizar producto');
-      throw err;
-    }
-  };
+    },
+    onError: (error: Error) =>
+      toast.error(error.message || 'Error al actualizar producto'),
+  });
 
-  const deleteProductMutation = async (productName: string) => {
-    try {
-      await deleteProduct(productName);
+  const deleteMutation = useMutation({
+    mutationFn: (productName: string) => deleteProduct(productName),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin', 'products'] });
       toast.success('Producto eliminado exitosamente');
-      await fetchProducts();
-    } catch (err: any) {
-      toast.error(err.message || 'Error al eliminar producto');
-      throw err;
-    }
-  };
-
-  useEffect(() => {
-    fetchProducts();
-  }, [fetchProducts]);
+    },
+    onError: (error: Error) =>
+      toast.error(error.message || 'Error al eliminar producto'),
+  });
 
   return {
-    products,
-    isLoading,
-    error,
-    refetch: fetchProducts,
-    createProductMutation,
-    updateProductMutation,
-    deleteProductMutation,
+    products: productsQuery.data ?? [],
+    isLoading: productsQuery.isLoading,
+    error: productsQuery.error,
+    createProduct: createMutation.mutateAsync,
+    isCreating: createMutation.isPending,
+    updateProduct: updateMutation.mutateAsync,
+    isUpdating: updateMutation.isPending,
+    deleteProduct: deleteMutation.mutateAsync,
+    isDeleting: deleteMutation.isPending,
   };
 }

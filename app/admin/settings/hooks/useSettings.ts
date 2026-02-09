@@ -1,9 +1,9 @@
 /**
  * useSettings Hook
- * Manages complete settings configuration
+ * Manages campaign settings with TanStack Query
  */
 
-import { useState, useCallback, useEffect } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import {
   getSettings,
@@ -11,62 +11,35 @@ import {
 } from '@/repositories/admin/settings/settings';
 import type { Settings } from '@/repositories/admin/settings/types';
 
-interface UseSettingsReturn {
-  settings: Settings | null;
-  isLoading: boolean;
-  error: string | null;
-  refetch: () => Promise<void>;
-  updateCampaignMutation: (dto: {
-    isActive?: boolean;
-    campaignStartDate?: string | null;
-    campaignEndDate?: string | null;
-  }) => Promise<void>;
-}
+export function useSettings() {
+  const queryClient = useQueryClient();
 
-export function useSettings(): UseSettingsReturn {
-  const [settings, setSettings] = useState<Settings | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const settingsQuery = useQuery<Settings>({
+    queryKey: ['admin', 'settings'],
+    queryFn: getSettings,
+    staleTime: 5 * 60 * 1000,
+    refetchOnWindowFocus: true,
+  });
 
-  const fetchSettings = useCallback(async () => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      const data = await getSettings();
-      setSettings(data);
-    } catch (err: any) {
-      const message = err.message || 'Error al cargar configuración';
-      setError(message);
-      toast.error(message);
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
-
-  const updateCampaignMutation = async (dto: {
-    isActive?: boolean;
-    campaignStartDate?: string | null;
-    campaignEndDate?: string | null;
-  }) => {
-    try {
-      await updateCampaignSettings(dto);
+  const updateCampaignMutation = useMutation({
+    mutationFn: (dto: {
+      isActive?: boolean;
+      campaignStartDate?: string | null;
+      campaignEndDate?: string | null;
+    }) => updateCampaignSettings(dto),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin', 'settings'] });
       toast.success('Campaña actualizada exitosamente');
-      await fetchSettings();
-    } catch (err: any) {
-      toast.error(err.message || 'Error al actualizar campaña');
-      throw err;
-    }
-  };
-
-  useEffect(() => {
-    fetchSettings();
-  }, [fetchSettings]);
+    },
+    onError: (error: Error) =>
+      toast.error(error.message || 'Error al actualizar campaña'),
+  });
 
   return {
-    settings,
-    isLoading,
-    error,
-    refetch: fetchSettings,
-    updateCampaignMutation,
+    settings: settingsQuery.data ?? null,
+    isLoading: settingsQuery.isLoading,
+    error: settingsQuery.error,
+    updateCampaign: updateCampaignMutation.mutateAsync,
+    isUpdating: updateCampaignMutation.isPending,
   };
 }

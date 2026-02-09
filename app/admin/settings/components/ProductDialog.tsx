@@ -1,8 +1,3 @@
-/**
- * ProductDialog Component
- * Modal for creating and editing products
- */
-
 "use client";
 
 import { useEffect } from "react";
@@ -34,7 +29,7 @@ export function ProductDialog({
   onClose,
   editingProduct,
 }: ProductDialogProps) {
-  const { createProductMutation, updateProductMutation } = useProducts();
+  const { createProduct, updateProduct } = useProducts();
 
   const {
     register,
@@ -58,22 +53,20 @@ export function ProductDialog({
   const onSubmit = async (data: ProductForm) => {
     try {
       if (editingProduct) {
-        // Update existing product
-        await updateProductMutation(editingProduct.productName, {
-          pointsValue: data.pointsValue,
+        await updateProduct({
+          productName: editingProduct.productName,
+          dto: { pointsValue: data.pointsValue },
         });
       } else {
-        // Create new product
-        await createProductMutation({
+        await createProduct({
           productName: data.productName,
           pointsValue: data.pointsValue,
         });
       }
-
       reset();
       onClose();
-    } catch (error) {
-      // Error handled in hook
+    } catch {
+      // Error handled in hook via toast
     }
   };
 
@@ -84,12 +77,12 @@ export function ProductDialog({
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="bg-slate-900 border-slate-700">
+      <DialogContent>
         <DialogHeader>
-          <DialogTitle className="text-white text-xl">
+          <DialogTitle>
             {editingProduct ? "Editar Producto" : "Nuevo Producto"}
           </DialogTitle>
-          <DialogDescription className="text-slate-400">
+          <DialogDescription>
             {editingProduct
               ? "Modifica los puntos del producto"
               : "Configura un producto y su valor en puntos"}
@@ -97,35 +90,29 @@ export function ProductDialog({
         </DialogHeader>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 py-4">
-          {/* Product Name */}
           <div>
-            <Label htmlFor="productName" className="text-slate-300">
-              Nombre del Producto
-            </Label>
+            <Label htmlFor="productName">Nombre del Producto</Label>
             <Input
               id="productName"
               {...register("productName")}
               placeholder="ej: Café Espresso"
-              className="mt-1 bg-slate-800 border-slate-600 text-white"
+              className="mt-1"
               disabled={!!editingProduct || isSubmitting}
             />
             {errors.productName && (
-              <p className="text-red-400 text-sm mt-1">
+              <p className="text-red-600 text-sm mt-1">
                 {errors.productName.message}
               </p>
             )}
             {editingProduct && (
-              <p className="text-slate-500 text-xs mt-1">
+              <p className="text-gray-400 text-xs mt-1">
                 El nombre no puede modificarse
               </p>
             )}
           </div>
 
-          {/* Points Value */}
           <div>
-            <Label htmlFor="pointsValue" className="text-slate-300">
-              Puntos Otorgados
-            </Label>
+            <Label htmlFor="pointsValue">Puntos Otorgados</Label>
             <Input
               id="pointsValue"
               type="number"
@@ -133,15 +120,15 @@ export function ProductDialog({
               placeholder="10"
               min={1}
               max={10000}
-              className="mt-1 bg-slate-800 border-slate-600 text-white"
+              className="mt-1"
               disabled={isSubmitting}
             />
             {errors.pointsValue && (
-              <p className="text-red-400 text-sm mt-1">
+              <p className="text-red-600 text-sm mt-1">
                 {errors.pointsValue.message}
               </p>
             )}
-            <p className="text-slate-500 text-xs mt-1">
+            <p className="text-gray-400 text-xs mt-1">
               Puntos que el cliente recibe al comprar este producto
             </p>
           </div>
@@ -152,15 +139,10 @@ export function ProductDialog({
               variant="outline"
               onClick={handleClose}
               disabled={isSubmitting}
-              className="border-slate-600 text-slate-300 hover:bg-slate-800"
             >
               Cancelar
             </Button>
-            <Button
-              type="submit"
-              disabled={isSubmitting}
-              className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700"
-            >
+            <Button type="submit" disabled={isSubmitting}>
               {isSubmitting
                 ? "Guardando..."
                 : editingProduct
