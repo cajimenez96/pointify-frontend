@@ -32,7 +32,7 @@ export function ClientsFilters({
         onValueChange={onFilterChange}
         className="w-full md:w-auto"
       >
-        <TabsList>
+        <TabsList className="gap-1">
           <TabsTrigger value="ALL">Todos</TabsTrigger>
           <TabsTrigger value="ACTIVE">Activos</TabsTrigger>
           <TabsTrigger value="PENDING">Pendientes</TabsTrigger>
