@@ -5,8 +5,8 @@
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import { redeemPoints } from '@/repositories/admin/transactions/transactions';
-import { RedeemPointsDto } from '@/repositories/admin/transactions/types';
+import { redeemPoints } from '@/repositories/transactions/transactions';
+import { RedeemPointsDto } from '@/repositories/transactions/types';
 
 export function useRedeemPoints() {
   const queryClient = useQueryClient();

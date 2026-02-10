@@ -8,8 +8,8 @@ import {
   redeemPoints,
   getTransactions,
   getClientTransactions,
-} from '@/repositories/admin/transactions/transactions';
-import { TransactionError } from '@/repositories/admin/transactions/types';
+} from '@/repositories/transactions/transactions';
+import { TransactionError } from '@/repositories/transactions/types';
 import type {
   EarnPointsDto,
   RedeemPointsDto,
@@ -17,7 +17,7 @@ import type {
   RedeemResponse,
   TransactionListResponse,
   Transaction,
-} from '@/repositories/admin/transactions/types';
+} from '@/repositories/transactions/types';
 
 // Mock apiClient
 jest.mock('@/lib/api-client', () => ({

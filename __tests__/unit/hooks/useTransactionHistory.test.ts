@@ -5,14 +5,14 @@
 
 import { renderHook, waitFor, act } from '@testing-library/react';
 import { useTransactionHistory } from '@/app/admin/hooks/useTransactionHistory';
-import * as transactionsRepo from '@/repositories/admin/transactions/transactions';
+import * as transactionsRepo from '@/repositories/transactions/transactions';
 import type {
   Transaction,
   TransactionListResponse,
-} from '@/repositories/admin/transactions/types';
+} from '@/repositories/transactions/types';
 
 // Mock the repository
-jest.mock('@/repositories/admin/transactions/transactions');
+jest.mock('@/repositories/transactions/transactions');
 
 // Mock sonner toast
 jest.mock('sonner', () => ({

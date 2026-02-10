@@ -8,12 +8,12 @@ import { toast } from 'sonner';
 import {
   getTransactions,
   getClientTransactions,
-} from '@/repositories/admin/transactions/transactions';
+} from '@/repositories/transactions/transactions';
 import type {
   Transaction,
   TransactionListResponse,
   TransactionType,
-} from '@/repositories/admin/transactions/types';
+} from '@/repositories/transactions/types';
 
 interface UseTransactionHistoryParams {
   page?: number;

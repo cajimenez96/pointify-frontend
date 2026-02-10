@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Search, User, Wallet } from "lucide-react";
-import type { ClientSummary } from "@/repositories/admin/transactions/types";
+import type { ClientSummary } from "@/repositories/transactions/types";
 
 interface ClientSearchCardProps {
   onClientFound: (client: ClientSummary) => void;

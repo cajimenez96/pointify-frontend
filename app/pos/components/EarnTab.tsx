@@ -24,7 +24,7 @@ import { useEarnPoints } from "../hooks/useEarnPoints";
 import { useProducts } from "@/app/admin/settings/hooks/useProducts";
 import { ClientSearchCard } from "./ClientSearchCard";
 import { earnPointsSchema, type EarnPointsForm } from "../schemas";
-import type { ClientSummary } from "@/repositories/admin/transactions/types";
+import type { ClientSummary } from "@/repositories/transactions/types";
 
 export function EarnTab() {
   const [selectedClient, setSelectedClient] = useState<ClientSummary | null>(
@@ -32,7 +32,7 @@ export function EarnTab() {
   );
   const [previewPoints, setPreviewPoints] = useState(0);
 
-  const { earnMutation, isEarning } = useEarnPoints();
+  const earnMutation = useEarnPoints();
   const { products, isLoading: loadingProducts } = useProducts();
 
   const {
@@ -64,7 +64,7 @@ export function EarnTab() {
     if (!selectedClient) return;
 
     try {
-      await earnMutation({
+      await earnMutation.mutateAsync({
         dni: data.dni,
         saleCode: data.saleCode,
         productName: data.productName,
@@ -103,7 +103,7 @@ export function EarnTab() {
       <ClientSearchCard
         onClientFound={handleClientFound}
         onSearchDni={mockSearchClient}
-        isLoading={isEarning}
+        isLoading={earnMutation.isPending}
       />
 
       {/* Sale Form - Only shown when client is selected */}
@@ -125,7 +125,7 @@ export function EarnTab() {
                   {...register("saleCode")}
                   placeholder="ej: SALE-2026-001"
                   className="mt-1 bg-slate-900 border-slate-600 text-white"
-                  disabled={isEarning}
+                  disabled={earnMutation.isPending}
                 />
                 {errors.saleCode && (
                   <p className="text-red-400 text-sm mt-1">
@@ -141,7 +141,7 @@ export function EarnTab() {
                 </Label>
                 <Select
                   onValueChange={(value) => setValue("productName", value)}
-                  disabled={isEarning || loadingProducts}
+                  disabled={earnMutation.isPending || loadingProducts}
                 >
                   <SelectTrigger className="mt-1 bg-slate-900 border-slate-600 text-white">
                     <SelectValue placeholder="Seleccionar producto..." />
@@ -192,11 +192,11 @@ export function EarnTab() {
           {/* Submit Button */}
           <Button
             type="submit"
-            disabled={isEarning || !selectedClient || previewPoints === 0}
+            disabled={earnMutation.isPending || !selectedClient || previewPoints === 0}
             className="w-full h-14 text-lg bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700"
           >
             <Plus className="h-5 w-5 mr-2" />
-            {isEarning ? "Registrando..." : "Registrar Venta"}
+            {earnMutation.isPending ? "Registrando..." : "Registrar Venta"}
           </Button>
         </form>
       )}

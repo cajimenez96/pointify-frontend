@@ -20,7 +20,7 @@ import { Gift, Lock, AlertCircle, Package } from "lucide-react";
 import { useRedeemPoints } from "../hooks/useRedeemPoints";
 import { useRewards } from "@/app/admin/settings/hooks/useRewards";
 import { ClientSearchCard } from "./ClientSearchCard";
-import type { ClientSummary } from "@/repositories/admin/transactions/types";
+import type { ClientSummary } from "@/repositories/transactions/types";
 import type { Reward } from "@/repositories/admin/settings/types";
 
 export function RedeemTab() {
@@ -30,7 +30,7 @@ export function RedeemTab() {
   const [selectedReward, setSelectedReward] = useState<Reward | null>(null);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
 
-  const { redeemMutation, isRedeeming } = useRedeemPoints();
+  const redeemMutation = useRedeemPoints();
   const { rewards, isLoading: loadingRewards } = useRewards(true); // Active only
 
   const handleClientFound = (client: ClientSummary) => {
@@ -64,7 +64,7 @@ export function RedeemTab() {
     if (!selectedClient || !selectedReward) return;
 
     try {
-      const response = await redeemMutation({
+      const response = await redeemMutation.mutateAsync({
         dni: selectedClient.dni,
         rewardId: selectedReward._id,
       });
@@ -104,7 +104,7 @@ export function RedeemTab() {
       <ClientSearchCard
         onClientFound={handleClientFound}
         onSearchDni={mockSearchClient}
-        isLoading={isRedeeming}
+        isLoading={redeemMutation.isPending}
       />
 
       {/* Rewards Grid - Only shown when client is selected */}
@@ -269,17 +269,17 @@ export function RedeemTab() {
             <Button
               variant="outline"
               onClick={() => setShowConfirmDialog(false)}
-              disabled={isRedeeming}
+              disabled={redeemMutation.isPending}
               className="border-slate-600 text-slate-300 hover:bg-slate-800"
             >
               Cancelar
             </Button>
             <Button
               onClick={handleConfirmRedeem}
-              disabled={isRedeeming}
+              disabled={redeemMutation.isPending}
               className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700"
             >
-              {isRedeeming ? "Canjeando..." : "🎉 Confirmar Canje"}
+              {redeemMutation.isPending ? "Canjeando..." : "🎉 Confirmar Canje"}
             </Button>
           </DialogFooter>
         </DialogContent>
