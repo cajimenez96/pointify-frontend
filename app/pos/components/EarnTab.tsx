@@ -1,6 +1,7 @@
 /**
  * EarnTab Component
- * Tab for adding points to clients (EARN operation)
+ * Tab for adding points to clients (EARN operation).
+ * Searches client via API — if not found, allows continuing (shadow user created on earn).
  */
 
 "use client";
@@ -21,18 +22,19 @@ import {
 import { Card } from "@/components/ui/card";
 import { Plus, TrendingUp } from "lucide-react";
 import { useEarnPoints } from "../hooks/useEarnPoints";
+import { useSearchClient } from "../hooks/useSearchClient";
 import { useProducts } from "@/app/admin/settings/hooks/useProducts";
 import { ClientSearchCard } from "./ClientSearchCard";
 import { earnPointsSchema, type EarnPointsForm } from "../schemas";
-import type { ClientSummary } from "@/repositories/transactions/types";
+import type { ClientSearchResult } from "../types";
 
 export function EarnTab() {
-  const [selectedClient, setSelectedClient] = useState<ClientSummary | null>(
-    null,
-  );
+  const [selectedClient, setSelectedClient] =
+    useState<ClientSearchResult | null>(null);
   const [previewPoints, setPreviewPoints] = useState(0);
 
   const earnMutation = useEarnPoints();
+  const searchMutation = useSearchClient();
   const { products, isLoading: loadingProducts } = useProducts();
 
   const {
@@ -48,7 +50,6 @@ export function EarnTab() {
 
   const selectedProductName = watch("productName");
 
-  // Update preview when product changes
   useEffect(() => {
     if (selectedProductName) {
       const product = products.find(
@@ -70,7 +71,6 @@ export function EarnTab() {
         productName: data.productName,
       });
 
-      // Reset form and client search
       reset();
       setSelectedClient(null);
       setPreviewPoints(0);
@@ -79,20 +79,9 @@ export function EarnTab() {
     }
   };
 
-  const handleClientFound = (client: ClientSummary) => {
+  const handleClientFound = (client: ClientSearchResult) => {
     setSelectedClient(client);
     setValue("dni", client.dni);
-  };
-
-  // Mock search function - in real implementation, this would fetch from backend
-  const mockSearchClient = async (dni: string): Promise<ClientSummary> => {
-    return {
-      dni,
-      name: `Cliente ${dni}`,
-      status: "PENDING",
-      currentPoints: 0,
-      totalAccumulated: 0,
-    };
   };
 
   return (
@@ -100,24 +89,20 @@ export function EarnTab() {
       {/* Client Search */}
       <ClientSearchCard
         onClientFound={handleClientFound}
-        onSearchDni={mockSearchClient}
-        isLoading={earnMutation.isPending}
+        onSearch={searchMutation.mutateAsync}
+        isLoading={searchMutation.isPending}
       />
 
-      {/* Sale Form - Only shown when client is selected */}
+      {/* Sale Form - Shown when client is found (exists or not) */}
       {selectedClient && (
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <Card className="p-6">
-            <h3 className="text-lg font-semibold mb-4">
-              Registrar Venta
-            </h3>
+            <h3 className="text-lg font-semibold mb-4">Registrar Venta</h3>
 
             <div className="space-y-4">
               {/* Sale Code */}
               <div>
-                <Label htmlFor="saleCode">
-                  Código de Venta
-                </Label>
+                <Label htmlFor="saleCode">Código de Venta</Label>
                 <Input
                   id="saleCode"
                   {...register("saleCode")}
@@ -134,9 +119,7 @@ export function EarnTab() {
 
               {/* Product Selection */}
               <div>
-                <Label htmlFor="productName">
-                  Producto
-                </Label>
+                <Label htmlFor="productName">Producto</Label>
                 <Select
                   onValueChange={(value) => setValue("productName", value)}
                   disabled={earnMutation.isPending || loadingProducts}
@@ -169,7 +152,9 @@ export function EarnTab() {
             <Card className="p-4 border-green-200 bg-green-50">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground">Puntos a sumar:</p>
+                  <p className="text-sm text-muted-foreground">
+                    Puntos a sumar:
+                  </p>
                   <div className="flex items-center gap-2 mt-1">
                     <TrendingUp className="h-5 w-5 text-green-600" />
                     <span className="text-2xl font-bold text-green-600">
@@ -190,7 +175,9 @@ export function EarnTab() {
           {/* Submit Button */}
           <Button
             type="submit"
-            disabled={earnMutation.isPending || !selectedClient || previewPoints === 0}
+            disabled={
+              earnMutation.isPending || !selectedClient || previewPoints === 0
+            }
             className="w-full h-14 text-lg bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700"
           >
             <Plus className="h-5 w-5 mr-2" />

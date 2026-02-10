@@ -1,6 +1,7 @@
 /**
  * ClientSearchCard Component
- * Shared component for DNI input and client display
+ * Shared component for DNI input and client display.
+ * Handles both existing clients and new clients (exists: false).
  */
 
 "use client";
@@ -9,22 +10,22 @@ import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Search, User, Wallet } from "lucide-react";
-import type { ClientSummary } from "@/repositories/transactions/types";
+import { Search, User, UserPlus, Wallet } from "lucide-react";
+import type { ClientSearchResult } from "../types";
 
 interface ClientSearchCardProps {
-  onClientFound: (client: ClientSummary) => void;
-  onSearchDni: (dni: string) => Promise<ClientSummary>;
+  onClientFound: (client: ClientSearchResult) => void;
+  onSearch: (dni: string) => Promise<ClientSearchResult>;
   isLoading?: boolean;
 }
 
 export function ClientSearchCard({
   onClientFound,
-  onSearchDni,
+  onSearch,
   isLoading = false,
 }: ClientSearchCardProps) {
   const [dni, setDni] = useState("");
-  const [client, setClient] = useState<ClientSummary | null>(null);
+  const [client, setClient] = useState<ClientSearchResult | null>(null);
   const [error, setError] = useState("");
 
   const handleSearch = async () => {
@@ -35,11 +36,11 @@ export function ClientSearchCard({
 
     setError("");
     try {
-      const foundClient = await onSearchDni(dni);
-      setClient(foundClient);
-      onClientFound(foundClient);
+      const result = await onSearch(dni);
+      setClient(result);
+      onClientFound(result);
     } catch (err: any) {
-      setError(err.message || "Cliente no encontrado");
+      setError(err.message || "Error al buscar cliente");
       setClient(null);
     }
   };
@@ -83,8 +84,8 @@ export function ClientSearchCard({
           </Button>
         </div>
 
-        {/* Client Display */}
-        {client && (
+        {/* Client Display - Existing Client */}
+        {client?.exists && (
           <div className="bg-primary/5 border border-primary/20 rounded-lg p-4">
             <div className="flex items-start justify-between">
               <div className="flex items-center gap-3">
@@ -92,10 +93,10 @@ export function ClientSearchCard({
                   <User className="h-6 w-6 text-white" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-lg">
-                    {client.name}
-                  </h3>
-                  <p className="text-muted-foreground text-sm">DNI: {client.dni}</p>
+                  <h3 className="font-semibold text-lg">{client.name}</h3>
+                  <p className="text-muted-foreground text-sm">
+                    DNI: {client.dni}
+                  </p>
                 </div>
               </div>
 
@@ -106,7 +107,9 @@ export function ClientSearchCard({
                     {client.currentPoints}
                   </span>
                 </div>
-                <p className="text-muted-foreground text-sm">puntos disponibles</p>
+                <p className="text-muted-foreground text-sm">
+                  puntos disponibles
+                </p>
               </div>
             </div>
 
@@ -117,6 +120,35 @@ export function ClientSearchCard({
                 </p>
               </div>
             )}
+
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleClear}
+              className="mt-3"
+            >
+              Buscar otro cliente
+            </Button>
+          </div>
+        )}
+
+        {/* Client Display - New Client (not found) */}
+        {client && !client.exists && (
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <div className="flex items-center gap-3">
+              <div className="h-12 w-12 rounded-full bg-blue-500 flex items-center justify-center">
+                <UserPlus className="h-6 w-6 text-white" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-lg">Cliente nuevo</h3>
+                <p className="text-muted-foreground text-sm">
+                  DNI: {client.dni}
+                </p>
+                <p className="text-blue-600 text-sm mt-1">
+                  Se registrará automáticamente al procesar la venta
+                </p>
+              </div>
+            </div>
 
             <Button
               variant="outline"
