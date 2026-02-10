@@ -1,10 +1,10 @@
 /**
  * Hook for POS login with TanStack Query
- * Unlike admin/superadmin, this does NOT redirect after login.
- * The POS page re-renders inline to show the authenticated view.
+ * After successful login, redirects to /pos/earn.
  */
 
 import { useMutation } from '@tanstack/react-query';
+import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { loginTenant } from '@/repositories/auth/auth';
 import { useAuthStore } from '@/lib/auth-store';
@@ -13,6 +13,7 @@ import type { User } from '@/lib/auth-store';
 
 export function useLoginPOSMutation() {
   const setAuth = useAuthStore((state) => state.setAuth);
+  const router = useRouter();
 
   return useMutation({
     mutationFn: (dto: TenantLoginDto) => loginTenant(dto),
@@ -28,6 +29,7 @@ export function useLoginPOSMutation() {
       };
       setAuth(user, data.access_token);
       toast.success('Sesión iniciada correctamente');
+      router.push('/pos/earn');
     },
     onError: (error: Error) => {
       toast.error(

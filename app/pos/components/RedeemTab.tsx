@@ -110,18 +110,18 @@ export function RedeemTab() {
       {/* Rewards Grid - Only shown when client is selected */}
       {selectedClient && (
         <div>
-          <h3 className="text-xl font-semibold text-white mb-4">
+          <h3 className="text-xl font-semibold mb-4">
             Premios Disponibles
           </h3>
 
           {loadingRewards ? (
             <div className="text-center py-12">
-              <div className="inline-block h-12 w-12 border-4 border-violet-600 border-t-transparent rounded-full animate-spin" />
+              <div className="inline-block h-12 w-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />
             </div>
           ) : rewards.length === 0 ? (
-            <Card className="p-8 border-slate-700 bg-slate-800/50 text-center">
-              <AlertCircle className="h-12 w-12 text-slate-400 mx-auto mb-3" />
-              <p className="text-slate-400">
+            <Card className="p-8 text-center">
+              <AlertCircle className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
+              <p className="text-muted-foreground">
                 No hay premios disponibles en este momento
               </p>
             </Card>
@@ -136,17 +136,17 @@ export function RedeemTab() {
                   <Card
                     key={reward._id}
                     className={`
-                      p-5 cursor-pointer transition-all
+                      p-5 transition-all
                       ${
                         status === "available"
-                          ? "border-green-700 bg-slate-800/70 hover:bg-slate-700/70 hover:scale-105"
-                          : "border-slate-700 bg-slate-800/30 opacity-60 cursor-not-allowed"
+                          ? "border-green-200 bg-green-50/50 hover:bg-green-50 hover:scale-105 cursor-pointer"
+                          : "opacity-60 cursor-not-allowed"
                       }
                     `}
                     onClick={() => isClickable && handleRewardClick(reward)}
                   >
                     {/* Image */}
-                    <div className="aspect-video bg-slate-900 rounded-lg mb-3 flex items-center justify-center overflow-hidden">
+                    <div className="aspect-video bg-gray-100 rounded-lg mb-3 flex items-center justify-center overflow-hidden">
                       {reward.imageUrl ? (
                         <img
                           src={reward.imageUrl}
@@ -154,30 +154,30 @@ export function RedeemTab() {
                           className="w-full h-full object-cover"
                         />
                       ) : (
-                        <Gift className="h-12 w-12 text-slate-600" />
+                        <Gift className="h-12 w-12 text-gray-300" />
                       )}
                     </div>
 
                     {/* Title */}
-                    <h4 className="font-semibold text-white text-lg mb-1">
+                    <h4 className="font-semibold text-lg mb-1">
                       {reward.name}
                     </h4>
 
                     {/* Description */}
                     {reward.description && (
-                      <p className="text-sm text-slate-400 mb-3">
+                      <p className="text-sm text-muted-foreground mb-3">
                         {reward.description}
                       </p>
                     )}
 
                     {/* Points Cost */}
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-2xl font-bold text-violet-400">
+                      <span className="text-2xl font-bold text-primary">
                         {reward.pointsCost} pts
                       </span>
 
                       {/* Stock indicator */}
-                      <div className="flex items-center gap-1 text-sm text-slate-400">
+                      <div className="flex items-center gap-1 text-sm text-muted-foreground">
                         <Package className="h-4 w-4" />
                         {reward.stock === null ? "∞" : reward.stock}
                       </div>
@@ -185,23 +185,23 @@ export function RedeemTab() {
 
                     {/* Status Badge */}
                     {status === "available" && (
-                      <div className="bg-green-900/30 border border-green-700 rounded px-3 py-2 text-center">
-                        <span className="text-green-400 font-medium">
-                          ✓ Disponible
+                      <div className="bg-green-50 border border-green-200 rounded px-3 py-2 text-center">
+                        <span className="text-green-700 font-medium">
+                          Disponible
                         </span>
                       </div>
                     )}
 
                     {status === "locked" && (
-                      <div className="bg-yellow-900/30 border border-yellow-700 rounded px-3 py-2">
+                      <div className="bg-yellow-50 border border-yellow-200 rounded px-3 py-2">
                         <div className="flex items-center gap-2">
-                          <Lock className="h-4 w-4 text-yellow-400" />
-                          <span className="text-yellow-400 text-sm">
+                          <Lock className="h-4 w-4 text-yellow-600" />
+                          <span className="text-yellow-700 text-sm">
                             Faltan {pointsNeeded} puntos
                           </span>
                         </div>
                         {/* Progress bar */}
-                        <div className="mt-2 h-2 bg-slate-700 rounded-full overflow-hidden">
+                        <div className="mt-2 h-2 bg-gray-200 rounded-full overflow-hidden">
                           <div
                             className="h-full bg-yellow-400"
                             style={{
@@ -213,8 +213,8 @@ export function RedeemTab() {
                     )}
 
                     {status === "out-of-stock" && (
-                      <div className="bg-red-900/30 border border-red-700 rounded px-3 py-2 text-center">
-                        <span className="text-red-400 font-medium">
+                      <div className="bg-red-50 border border-red-200 rounded px-3 py-2 text-center">
+                        <span className="text-red-600 font-medium">
                           Sin stock
                         </span>
                       </div>
@@ -229,35 +229,35 @@ export function RedeemTab() {
 
       {/* Confirmation Dialog */}
       <Dialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog}>
-        <DialogContent className="bg-slate-900 border-slate-700">
+        <DialogContent>
           <DialogHeader>
-            <DialogTitle className="text-white text-xl">
+            <DialogTitle className="text-xl">
               Confirmar Canje
             </DialogTitle>
-            <DialogDescription className="text-slate-400">
+            <DialogDescription>
               ¿Estás seguro de canjear este premio?
             </DialogDescription>
           </DialogHeader>
 
           {selectedReward && selectedClient && (
             <div className="space-y-4 py-4">
-              <div className="bg-slate-800 rounded-lg p-4">
-                <p className="text-sm text-slate-400 mb-1">Premio:</p>
-                <p className="text-lg font-semibold text-white">
+              <div className="bg-gray-50 rounded-lg p-4">
+                <p className="text-sm text-muted-foreground mb-1">Premio:</p>
+                <p className="text-lg font-semibold">
                   {selectedReward.name}
                 </p>
               </div>
 
-              <div className="bg-slate-800 rounded-lg p-4">
-                <p className="text-sm text-slate-400 mb-1">Costo:</p>
-                <p className="text-2xl font-bold text-violet-400">
+              <div className="bg-gray-50 rounded-lg p-4">
+                <p className="text-sm text-muted-foreground mb-1">Costo:</p>
+                <p className="text-2xl font-bold text-primary">
                   {selectedReward.pointsCost} puntos
                 </p>
               </div>
 
-              <div className="bg-slate-800 rounded-lg p-4">
-                <p className="text-sm text-slate-400 mb-1">Saldo restante:</p>
-                <p className="text-xl font-semibold text-green-400">
+              <div className="bg-gray-50 rounded-lg p-4">
+                <p className="text-sm text-muted-foreground mb-1">Saldo restante:</p>
+                <p className="text-xl font-semibold text-green-600">
                   {selectedClient.currentPoints - selectedReward.pointsCost}{" "}
                   puntos
                 </p>
@@ -270,7 +270,6 @@ export function RedeemTab() {
               variant="outline"
               onClick={() => setShowConfirmDialog(false)}
               disabled={redeemMutation.isPending}
-              className="border-slate-600 text-slate-300 hover:bg-slate-800"
             >
               Cancelar
             </Button>
@@ -279,7 +278,7 @@ export function RedeemTab() {
               disabled={redeemMutation.isPending}
               className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700"
             >
-              {redeemMutation.isPending ? "Canjeando..." : "🎉 Confirmar Canje"}
+              {redeemMutation.isPending ? "Canjeando..." : "Confirmar Canje"}
             </Button>
           </DialogFooter>
         </DialogContent>

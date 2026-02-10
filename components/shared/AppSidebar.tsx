@@ -12,6 +12,8 @@ import {
   LogOut,
   ChevronUp,
   User2,
+  Plus,
+  Gift,
 } from "lucide-react";
 
 import {
@@ -38,7 +40,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const pathname = usePathname();
   const { user, logout } = useAuthStore();
 
-  // Define menus based on role
   const adminMenu = [
     {
       title: "Dashboard",
@@ -50,11 +51,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       url: "/admin/clients",
       icon: Users,
     },
-    // {
-    //   title: "Gestión de Cajeros",
-    //   url: "/admin/cashiers",
-    //   icon: Store,
-    // },
     {
       title: "Configuración",
       url: "/admin/settings",
@@ -80,8 +76,28 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     },
   ];
 
-  const items = user?.isSuperAdmin ? superAdminMenu : adminMenu;
-  const roleLabel = user?.isSuperAdmin ? "Super Admin" : "Administrador";
+  const posMenu = [
+    {
+      title: "Sumar Puntos",
+      url: "/pos/earn",
+      icon: Plus,
+    },
+    {
+      title: "Canjear Premio",
+      url: "/pos/redeem",
+      icon: Gift,
+    },
+  ];
+
+  const isPOS = pathname.startsWith("/pos");
+
+  const getMenuConfig = () => {
+    if (user?.isSuperAdmin) return { items: superAdminMenu, label: "Super Admin" };
+    if (isPOS) return { items: posMenu, label: user?.role === "cashier" ? "Cajero" : "Administrador" };
+    return { items: adminMenu, label: "Administrador" };
+  };
+
+  const { items, label: roleLabel } = getMenuConfig();
 
   return (
     <Sidebar collapsible="icon" {...props}>
@@ -99,7 +115,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Menu Principal</SidebarGroupLabel>
+          <SidebarGroupLabel>
+            {isPOS ? "Punto de Venta" : "Menu Principal"}
+          </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {items.map((item) => (
@@ -120,6 +138,28 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
+
+        {isPOS && user?.role === "admin" && (
+          <SidebarGroup>
+            <SidebarGroupLabel>Administración</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                <SidebarMenuItem>
+                  <SidebarMenuButton
+                    asChild
+                    tooltip="Panel Admin"
+                    className="text-sm font-normal"
+                  >
+                    <Link href="/admin/dashboard">
+                      <LayoutDashboard />
+                      <span>Panel Admin</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        )}
       </SidebarContent>
 
       <SidebarFooter>

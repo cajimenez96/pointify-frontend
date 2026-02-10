@@ -1,28 +1,34 @@
 "use client";
 
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/lib/auth-store";
 import { useLoginPOSMutation } from "./hooks/useLoginPOS";
 import { POSLogin } from "./components/POSLogin";
-import { POSHeader } from "./components/POSHeader";
-import { POSDashboard } from "./components/POSDashboard";
 
 export default function POSPage() {
-  const { user, logout } = useAuthStore();
+  const { user, isLoading } = useAuthStore();
+  const router = useRouter();
   const loginMutation = useLoginPOSMutation();
 
-  if (!user) {
+  useEffect(() => {
+    if (!isLoading && user) {
+      router.push("/pos/earn");
+    }
+  }, [user, isLoading, router]);
+
+  if (isLoading || user) {
     return (
-      <POSLogin
-        onLogin={(data) => loginMutation.mutate(data)}
-        isSubmitting={loginMutation.isPending}
-      />
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+      </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 p-4 md:p-8">
-      <POSHeader user={user} onLogout={logout} />
-      <POSDashboard />
-    </div>
+    <POSLogin
+      onLogin={(data) => loginMutation.mutate(data)}
+      isSubmitting={loginMutation.isPending}
+    />
   );
 }

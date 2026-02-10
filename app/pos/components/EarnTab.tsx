@@ -86,8 +86,6 @@ export function EarnTab() {
 
   // Mock search function - in real implementation, this would fetch from backend
   const mockSearchClient = async (dni: string): Promise<ClientSummary> => {
-    // This is a placeholder - the actual search would happen in the EARN mutation
-    // which creates shadow users automatically
     return {
       dni,
       name: `Cliente ${dni}`,
@@ -109,26 +107,26 @@ export function EarnTab() {
       {/* Sale Form - Only shown when client is selected */}
       {selectedClient && (
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-          <Card className="p-6 border-slate-700 bg-slate-800/50">
-            <h3 className="text-lg font-semibold text-white mb-4">
+          <Card className="p-6">
+            <h3 className="text-lg font-semibold mb-4">
               Registrar Venta
             </h3>
 
             <div className="space-y-4">
               {/* Sale Code */}
               <div>
-                <Label htmlFor="saleCode" className="text-slate-300">
+                <Label htmlFor="saleCode">
                   Código de Venta
                 </Label>
                 <Input
                   id="saleCode"
                   {...register("saleCode")}
                   placeholder="ej: SALE-2026-001"
-                  className="mt-1 bg-slate-900 border-slate-600 text-white"
+                  className="mt-1"
                   disabled={earnMutation.isPending}
                 />
                 {errors.saleCode && (
-                  <p className="text-red-400 text-sm mt-1">
+                  <p className="text-destructive text-sm mt-1">
                     {errors.saleCode.message}
                   </p>
                 )}
@@ -136,14 +134,14 @@ export function EarnTab() {
 
               {/* Product Selection */}
               <div>
-                <Label htmlFor="productName" className="text-slate-300">
+                <Label htmlFor="productName">
                   Producto
                 </Label>
                 <Select
                   onValueChange={(value) => setValue("productName", value)}
                   disabled={earnMutation.isPending || loadingProducts}
                 >
-                  <SelectTrigger className="mt-1 bg-slate-900 border-slate-600 text-white">
+                  <SelectTrigger className="mt-1">
                     <SelectValue placeholder="Seleccionar producto..." />
                   </SelectTrigger>
                   <SelectContent>
@@ -158,7 +156,7 @@ export function EarnTab() {
                   </SelectContent>
                 </Select>
                 {errors.productName && (
-                  <p className="text-red-400 text-sm mt-1">
+                  <p className="text-destructive text-sm mt-1">
                     {errors.productName.message}
                   </p>
                 )}
@@ -168,20 +166,20 @@ export function EarnTab() {
 
           {/* Preview */}
           {previewPoints > 0 && (
-            <Card className="p-4 border-green-700 bg-green-900/20">
+            <Card className="p-4 border-green-200 bg-green-50">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-slate-400">Puntos a sumar:</p>
+                  <p className="text-sm text-muted-foreground">Puntos a sumar:</p>
                   <div className="flex items-center gap-2 mt-1">
-                    <TrendingUp className="h-5 w-5 text-green-400" />
-                    <span className="text-2xl font-bold text-green-400">
+                    <TrendingUp className="h-5 w-5 text-green-600" />
+                    <span className="text-2xl font-bold text-green-600">
                       +{previewPoints}
                     </span>
                   </div>
                 </div>
                 <div className="text-right">
-                  <p className="text-sm text-slate-400">Nuevo saldo:</p>
-                  <span className="text-xl font-semibold text-white">
+                  <p className="text-sm text-muted-foreground">Nuevo saldo:</p>
+                  <span className="text-xl font-semibold">
                     {selectedClient.currentPoints + previewPoints} puntos
                   </span>
                 </div>

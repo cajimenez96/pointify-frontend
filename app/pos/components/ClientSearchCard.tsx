@@ -51,7 +51,7 @@ export function ClientSearchCard({
   };
 
   return (
-    <Card className="p-6 border-slate-700 bg-slate-800/50">
+    <Card className="p-6">
       <div className="space-y-4">
         {/* Search Input */}
         <div className="flex gap-2">
@@ -68,15 +68,15 @@ export function ClientSearchCard({
                 if (e.key === "Enter") handleSearch();
               }}
               maxLength={8}
-              className="h-12 text-lg bg-slate-900 border-slate-600 text-white"
+              className="h-12 text-lg"
               disabled={isLoading}
             />
-            {error && <p className="text-red-400 text-sm mt-1">{error}</p>}
+            {error && <p className="text-destructive text-sm mt-1">{error}</p>}
           </div>
           <Button
             onClick={handleSearch}
             disabled={isLoading || dni.length < 7}
-            className="h-12 px-6 bg-violet-600 hover:bg-violet-700"
+            className="h-12 px-6"
           >
             <Search className="h-5 w-5 mr-2" />
             Buscar
@@ -85,35 +85,35 @@ export function ClientSearchCard({
 
         {/* Client Display */}
         {client && (
-          <div className="bg-gradient-to-r from-violet-900/30 to-purple-900/30 border border-violet-700 rounded-lg p-4">
+          <div className="bg-primary/5 border border-primary/20 rounded-lg p-4">
             <div className="flex items-start justify-between">
               <div className="flex items-center gap-3">
-                <div className="h-12 w-12 rounded-full bg-violet-600 flex items-center justify-center">
+                <div className="h-12 w-12 rounded-full bg-primary flex items-center justify-center">
                   <User className="h-6 w-6 text-white" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-white text-lg">
+                  <h3 className="font-semibold text-lg">
                     {client.name}
                   </h3>
-                  <p className="text-slate-400 text-sm">DNI: {client.dni}</p>
+                  <p className="text-muted-foreground text-sm">DNI: {client.dni}</p>
                 </div>
               </div>
 
               <div className="text-right">
                 <div className="flex items-center gap-2 justify-end">
-                  <Wallet className="h-5 w-5 text-green-400" />
-                  <span className="text-2xl font-bold text-green-400">
+                  <Wallet className="h-5 w-5 text-green-600" />
+                  <span className="text-2xl font-bold text-green-600">
                     {client.currentPoints}
                   </span>
                 </div>
-                <p className="text-slate-400 text-sm">puntos disponibles</p>
+                <p className="text-muted-foreground text-sm">puntos disponibles</p>
               </div>
             </div>
 
             {client.status === "PENDING" && (
-              <div className="mt-3 bg-yellow-900/30 border border-yellow-700 rounded px-3 py-2">
-                <p className="text-yellow-400 text-sm">
-                  ⚠️ Cliente pendiente de completar perfil
+              <div className="mt-3 bg-yellow-50 border border-yellow-200 rounded px-3 py-2">
+                <p className="text-yellow-700 text-sm">
+                  Cliente pendiente de completar perfil
                 </p>
               </div>
             )}
@@ -122,7 +122,7 @@ export function ClientSearchCard({
               variant="outline"
               size="sm"
               onClick={handleClear}
-              className="mt-3 border-slate-600 text-slate-300 hover:bg-slate-700"
+              className="mt-3"
             >
               Buscar otro cliente
             </Button>
