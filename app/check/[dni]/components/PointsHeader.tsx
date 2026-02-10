@@ -22,21 +22,21 @@ export function PointsHeader({
   status,
 }: PointsHeaderProps) {
   return (
-    <Card className="p-6 border-violet-700 bg-gradient-to-r from-violet-900/30 to-purple-900/30 backdrop-blur">
+    <Card className="p-6 border-primary/20 bg-primary/5">
       {/* Company Info */}
       <div className="flex items-center gap-2 mb-4">
-        <Building2 className="h-5 w-5 text-slate-400" />
-        <span className="text-slate-300 text-sm">{companyName}</span>
+        <Building2 className="h-5 w-5 text-muted-foreground" />
+        <span className="text-muted-foreground text-sm">{companyName}</span>
       </div>
 
       {/* Client Greeting */}
       <div className="mb-4">
-        <h1 className="text-2xl md:text-3xl font-bold text-white mb-1">
+        <h1 className="text-2xl md:text-3xl font-bold mb-1">
           {clientName ? `Hola, ${clientName}` : "Hola!"}
         </h1>
         {status === "PENDING" && (
-          <p className="text-yellow-400 text-sm">
-            ⚠️ Completa tu perfil para obtener beneficios adicionales
+          <p className="text-yellow-600 text-sm">
+            Completa tu perfil para obtener beneficios adicionales
           </p>
         )}
       </div>
@@ -47,12 +47,12 @@ export function PointsHeader({
           <Wallet className="h-7 w-7 text-white" />
         </div>
         <div>
-          <p className="text-slate-400 text-sm">Tienes</p>
+          <p className="text-muted-foreground text-sm">Tienes</p>
           <div className="flex items-baseline gap-2">
-            <span className="text-4xl md:text-5xl font-bold text-green-400">
+            <span className="text-4xl md:text-5xl font-bold text-green-600">
               {currentPoints}
             </span>
-            <span className="text-xl text-slate-300">puntos</span>
+            <span className="text-xl text-muted-foreground">puntos</span>
           </div>
         </div>
       </div>

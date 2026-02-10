@@ -18,7 +18,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useRewards } from "../hooks/useRewards";
 import { rewardSchema, type RewardForm } from "../schemas";
-import type { Reward } from "@/repositories/admin/settings/types";
+import type { Reward } from "@/repositories/settings/types";
 
 interface RewardDialogProps {
   isOpen: boolean;

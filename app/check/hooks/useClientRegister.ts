@@ -1,40 +1,21 @@
 /**
  * useClientRegister Hook
- * Handles client registration for pending users
+ * Handles profile completion for pending (shadow) users
+ * Uses completeProfile() from clients repository + TanStack Query useMutation
  */
 
-import { useState } from 'react';
-import apiClient from '@/lib/api-client';
+import { useMutation } from '@tanstack/react-query';
+import { completeProfile } from '@/repositories/clients/clients';
 import { toast } from 'sonner';
 
-interface RegisterData {
-  dni: string;
-  companyCode: string;
-  name: string;
-  email: string;
-  phone: string;
-}
-
 export function useClientRegister() {
-  const [isRegistering, setIsRegistering] = useState(false);
-
-  const registerClient = async (data: RegisterData) => {
-    setIsRegistering(true);
-    try {
-      await apiClient.post(`/clients/complete-profile`, data);
+  return useMutation({
+    mutationFn: completeProfile,
+    onSuccess: () => {
       toast.success('¡Registro completado! Bienvenido a Pointify.');
-      return true;
-    } catch (error: any) {
-      const message = error.response?.data?.message || 'Error al registrar cliente';
-      toast.error(message);
-      return false;
-    } finally {
-      setIsRegistering(false);
-    }
-  };
-
-  return {
-    registerClient,
-    isRegistering,
-  };
+    },
+    onError: (error: any) => {
+      toast.error(error.message || 'Error al registrar cliente');
+    },
+  });
 }

@@ -16,7 +16,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useProducts } from "../hooks/useProducts";
 import { productSchema, type ProductForm } from "../schemas";
-import type { ProductPoints } from "@/repositories/admin/settings/types";
+import type { ProductPoints } from "@/repositories/settings/types";
 
 interface ProductDialogProps {
   isOpen: boolean;

@@ -15,7 +15,7 @@ import {
 import { Edit, Trash2, Plus, Package } from "lucide-react";
 import { ProductDialog } from "./ProductDialog";
 import { useProducts } from "../hooks/useProducts";
-import type { ProductPoints } from "@/repositories/admin/settings/types";
+import type { ProductPoints } from "@/repositories/settings/types";
 import { Container } from "@/components/common/Container";
 
 export function ProductsTable() {

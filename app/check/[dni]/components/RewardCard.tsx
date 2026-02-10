@@ -14,27 +14,19 @@ interface RewardCardProps {
 }
 
 export function RewardCard({ reward }: RewardCardProps) {
-  const getStatusColor = () => {
-    if (reward.stock === 0) return "red";
-    if (reward.canAfford) return "green";
-    return "yellow";
-  };
-
-  const statusColor = getStatusColor();
-
   return (
     <Card
       className={`
         p-5 transition-all
         ${
           reward.canAfford && reward.stock !== 0
-            ? "border-green-700 bg-slate-800/70 hover:scale-105"
-            : "border-slate-700 bg-slate-800/30 opacity-75"
+            ? "border-green-200 bg-green-50/50 hover:scale-105"
+            : "opacity-60"
         }
       `}
     >
       {/* Image */}
-      <div className="aspect-video bg-slate-900 rounded-lg mb-4 flex items-center justify-center overflow-hidden">
+      <div className="aspect-video bg-gray-100 rounded-lg mb-4 flex items-center justify-center overflow-hidden">
         {reward.imageUrl ? (
           <img
             src={reward.imageUrl}
@@ -42,16 +34,16 @@ export function RewardCard({ reward }: RewardCardProps) {
             className="w-full h-full object-cover"
           />
         ) : (
-          <Gift className="h-16 w-16 text-slate-600" />
+          <Gift className="h-16 w-16 text-gray-300" />
         )}
       </div>
 
       {/* Title */}
-      <h3 className="font-semibold text-white text-lg mb-2">{reward.name}</h3>
+      <h3 className="font-semibold text-lg mb-2">{reward.name}</h3>
 
       {/* Description */}
       {reward.description && (
-        <p className="text-sm text-slate-400 mb-3 line-clamp-2">
+        <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
           {reward.description}
         </p>
       )}
@@ -59,15 +51,15 @@ export function RewardCard({ reward }: RewardCardProps) {
       {/* Points Cost */}
       <div className="flex items-center justify-between mb-3">
         <div>
-          <p className="text-xs text-slate-500">Costo</p>
-          <span className="text-2xl font-bold text-violet-400">
+          <p className="text-xs text-muted-foreground">Costo</p>
+          <span className="text-2xl font-bold text-primary">
             {reward.pointsCost} pts
           </span>
         </div>
 
         {/* Stock indicator */}
         {reward.stock !== null && (
-          <div className="flex items-center gap-1 text-sm text-slate-400">
+          <div className="flex items-center gap-1 text-sm text-muted-foreground">
             <Package className="h-4 w-4" />
             {reward.stock}
           </div>
@@ -76,30 +68,30 @@ export function RewardCard({ reward }: RewardCardProps) {
 
       {/* Status */}
       {reward.stock === 0 ? (
-        <div className="bg-red-900/30 border border-red-700 rounded px-3 py-2 text-center">
-          <div className="flex items-center justify-center gap-2 text-red-400">
+        <div className="bg-red-50 border border-red-200 rounded px-3 py-2 text-center">
+          <div className="flex items-center justify-center gap-2 text-red-600">
             <AlertCircle className="h-4 w-4" />
             <span className="font-medium">Sin stock</span>
           </div>
         </div>
       ) : reward.canAfford ? (
-        <div className="bg-green-900/30 border border-green-700 rounded px-3 py-2 text-center">
-          <span className="text-green-400 font-medium">
-            ✓ Disponible para canjear
+        <div className="bg-green-50 border border-green-200 rounded px-3 py-2 text-center">
+          <span className="text-green-700 font-medium">
+            Disponible para canjear
           </span>
         </div>
       ) : (
-        <div className="bg-yellow-900/30 border border-yellow-700 rounded px-3 py-2">
+        <div className="bg-yellow-50 border border-yellow-200 rounded px-3 py-2">
           <div className="flex items-center gap-2 mb-2">
-            <Lock className="h-4 w-4 text-yellow-400" />
-            <span className="text-yellow-400 text-sm font-medium">
+            <Lock className="h-4 w-4 text-yellow-600" />
+            <span className="text-yellow-700 text-sm font-medium">
               Te faltan {reward.pointsNeeded} puntos
             </span>
           </div>
           {/* Progress bar */}
-          <div className="h-2 bg-slate-700 rounded-full overflow-hidden">
+          <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
             <div
-              className="h-full bg-gradient-to-r from-yellow-500 to-amber-500 transition-all"
+              className="h-full bg-yellow-400 transition-all"
               style={{
                 width: `${((reward.pointsCost - reward.pointsNeeded) / reward.pointsCost) * 100}%`,
               }}
@@ -110,7 +102,7 @@ export function RewardCard({ reward }: RewardCardProps) {
 
       {/* Redemption Note */}
       {reward.canAfford && reward.stock !== 0 && (
-        <p className="text-xs text-slate-500 mt-3 text-center">
+        <p className="text-xs text-muted-foreground mt-3 text-center">
           Muestra tu DNI en caja para canjear
         </p>
       )}

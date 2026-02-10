@@ -11,12 +11,12 @@ import {
   createReward,
   updateReward,
   deleteReward,
-} from '@/repositories/admin/settings/settings';
+} from '@/repositories/settings/settings';
 import type {
   Reward,
   CreateRewardDto,
   UpdateRewardDto,
-} from '@/repositories/admin/settings/types';
+} from '@/repositories/settings/types';
 
 export function useRewards(activeOnly: boolean = false) {
   const queryClient = useQueryClient();

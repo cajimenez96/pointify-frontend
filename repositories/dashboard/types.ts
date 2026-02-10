@@ -33,22 +33,14 @@ export interface RecentTransaction {
 }
 
 // ============================================================================
-// CLIENT SUMMARY (from /clients)
-// ============================================================================
-
-export interface ClientSummary {
-  _id: string;
-  status: 'ACTIVE' | 'PENDING';
-  currentPoints: number;
-}
-
-// ============================================================================
 // COMPUTED DASHBOARD DATA
 // ============================================================================
 
+import type { Client } from '../clients/types';
+
 export interface DashboardComputedData {
   stats: DashboardStats;
-  clients: ClientSummary[];
+  clients: Client[];
   activeClients: number;
   shadowClients: number;
   conversionRate: number;

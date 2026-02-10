@@ -4,7 +4,7 @@
 
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import type { Settings } from "@/repositories/admin/settings/types";
+import type { Settings } from "@/repositories/settings/types";
 
 interface CampaignStatusProps {
   settings: Settings;

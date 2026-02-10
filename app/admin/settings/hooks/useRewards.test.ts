@@ -6,10 +6,10 @@ import React from 'react';
 import { renderHook, waitFor, act } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useRewards } from './useRewards';
-import * as settingsRepo from '@/repositories/admin/settings/settings';
-import type { Reward } from '@/repositories/admin/settings/types';
+import * as settingsRepo from '@/repositories/settings/settings';
+import type { Reward } from '@/repositories/settings/types';
 
-jest.mock('@/repositories/admin/settings/settings');
+jest.mock('@/repositories/settings/settings');
 jest.mock('sonner', () => ({
   toast: { success: jest.fn(), error: jest.fn() },
 }));

@@ -10,12 +10,12 @@ import {
   createProduct,
   updateProductPoints,
   deleteProduct,
-} from '@/repositories/admin/settings/settings';
+} from '@/repositories/settings/settings';
 import type {
   ProductPoints,
   CreateProductDto,
   UpdateProductPointsDto,
-} from '@/repositories/admin/settings/types';
+} from '@/repositories/settings/types';
 
 export function useProducts() {
   const queryClient = useQueryClient();

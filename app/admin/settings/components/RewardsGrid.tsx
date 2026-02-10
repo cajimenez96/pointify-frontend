@@ -7,7 +7,7 @@ import { Gift, Plus, Edit, Trash2 } from "lucide-react";
 import { Container } from "@/components/common/Container";
 import { RewardDialog } from "./RewardDialog";
 import { useRewards } from "../hooks/useRewards";
-import type { Reward } from "@/repositories/admin/settings/types";
+import type { Reward } from "@/repositories/settings/types";
 
 export function RewardsGrid() {
   const [activeOnly] = useState<boolean>(true); // TODO: Add a toggle to switch between active and all rewards

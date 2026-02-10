@@ -22,7 +22,7 @@ import { useSearchClient } from "../hooks/useSearchClient";
 import { useRewards } from "@/app/admin/settings/hooks/useRewards";
 import { ClientSearchCard } from "./ClientSearchCard";
 import type { ClientSearchResult } from "../types";
-import type { Reward } from "@/repositories/admin/settings/types";
+import type { Reward } from "@/repositories/settings/types";
 
 export function RedeemTab() {
   const [selectedClient, setSelectedClient] =

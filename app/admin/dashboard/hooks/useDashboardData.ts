@@ -4,10 +4,12 @@
  */
 
 import { useQuery } from '@tanstack/react-query';
-import { getDashboardStats, getClients } from '@/repositories/admin/dashboard/dashboard';
-import { getSettings } from '@/repositories/admin/settings/settings';
-import type { DashboardStats, ClientSummary } from '@/repositories/admin/dashboard/types';
-import type { Settings } from '@/repositories/admin/settings/types';
+import { getDashboardStats } from '@/repositories/dashboard/dashboard';
+import { getSettings } from '@/repositories/settings/settings';
+import { getClients } from '@/repositories/clients/clients';
+import type { DashboardStats } from '@/repositories/dashboard/types';
+import type { Client } from '@/repositories/clients/types';
+import type { Settings } from '@/repositories/settings/types';
 
 export function useDashboardStats() {
   return useQuery<DashboardStats>({
@@ -28,7 +30,7 @@ export function useDashboardSettings() {
 }
 
 export function useDashboardClients() {
-  return useQuery<ClientSummary[]>({
+  return useQuery<Client[]>({
     queryKey: ['admin', 'clients'],
     queryFn: getClients,
     refetchOnWindowFocus: true,

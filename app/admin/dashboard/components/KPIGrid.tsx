@@ -4,8 +4,8 @@
 
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import type { DashboardStats } from "@/repositories/admin/dashboard/types";
-import type { Settings } from "@/repositories/admin/settings/types";
+import type { DashboardStats } from "@/repositories/dashboard/types";
+import type { Settings } from "@/repositories/settings/types";
 
 interface KPIGridProps {
   stats: DashboardStats;

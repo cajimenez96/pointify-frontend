@@ -3,7 +3,7 @@
  * Handles client management and public client view (QR code)
  */
 
-import type { Reward } from '../admin/settings/types';
+import type { Reward } from '../settings/types';
 
 // ============================================================================
 // CLIENT TYPES

@@ -8,8 +8,8 @@ import { toast } from 'sonner';
 import {
   getSettings,
   updateCampaignSettings,
-} from '@/repositories/admin/settings/settings';
-import type { Settings } from '@/repositories/admin/settings/types';
+} from '@/repositories/settings/settings';
+import type { Settings } from '@/repositories/settings/types';
 
 export function useSettings() {
   const queryClient = useQueryClient();

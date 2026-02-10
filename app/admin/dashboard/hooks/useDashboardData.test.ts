@@ -7,14 +7,17 @@ import React from 'react';
 import { renderHook, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useDashboardData } from './useDashboardData';
-import * as dashboardRepo from '@/repositories/admin/dashboard/dashboard';
-import * as settingsRepo from '@/repositories/admin/settings/settings';
-import type { DashboardStats, ClientSummary } from '@/repositories/admin/dashboard/types';
-import type { Settings } from '@/repositories/admin/settings/types';
+import * as dashboardRepo from '@/repositories/dashboard/dashboard';
+import * as settingsRepo from '@/repositories/settings/settings';
+import * as clientsRepo from '@/repositories/clients/clients';
+import type { DashboardStats } from '@/repositories/dashboard/types';
+import type { Client } from '@/repositories/clients/types';
+import type { Settings } from '@/repositories/settings/types';
 
 // Mock the repositories
-jest.mock('@/repositories/admin/dashboard/dashboard');
-jest.mock('@/repositories/admin/settings/settings');
+jest.mock('@/repositories/dashboard/dashboard');
+jest.mock('@/repositories/settings/settings');
+jest.mock('@/repositories/clients/clients');
 
 describe('useDashboardData', () => {
   let queryClient: QueryClient;
@@ -46,7 +49,7 @@ describe('useDashboardData', () => {
     campaignEndDate: '2026-12-31T23:59:59Z',
   };
 
-  const mockClients: ClientSummary[] = [
+  const mockClients: Partial<Client>[] = [
     { _id: 'c1', status: 'ACTIVE', currentPoints: 100 },
     { _id: 'c2', status: 'ACTIVE', currentPoints: 50 },
     { _id: 'c3', status: 'PENDING', currentPoints: 0 },
@@ -72,7 +75,7 @@ describe('useDashboardData', () => {
   it('should fetch all dashboard data successfully', async () => {
     (dashboardRepo.getDashboardStats as jest.Mock).mockResolvedValue(mockStats);
     (settingsRepo.getSettings as jest.Mock).mockResolvedValue(mockSettings);
-    (dashboardRepo.getClients as jest.Mock).mockResolvedValue(mockClients);
+    (clientsRepo.getClients as jest.Mock).mockResolvedValue(mockClients);
 
     const { result } = renderHook(() => useDashboardData(), { wrapper });
 
@@ -90,7 +93,7 @@ describe('useDashboardData', () => {
   it('should compute activeClients correctly', async () => {
     (dashboardRepo.getDashboardStats as jest.Mock).mockResolvedValue(mockStats);
     (settingsRepo.getSettings as jest.Mock).mockResolvedValue(mockSettings);
-    (dashboardRepo.getClients as jest.Mock).mockResolvedValue(mockClients);
+    (clientsRepo.getClients as jest.Mock).mockResolvedValue(mockClients);
 
     const { result } = renderHook(() => useDashboardData(), { wrapper });
 
@@ -104,7 +107,7 @@ describe('useDashboardData', () => {
   it('should compute shadowClients correctly', async () => {
     (dashboardRepo.getDashboardStats as jest.Mock).mockResolvedValue(mockStats);
     (settingsRepo.getSettings as jest.Mock).mockResolvedValue(mockSettings);
-    (dashboardRepo.getClients as jest.Mock).mockResolvedValue(mockClients);
+    (clientsRepo.getClients as jest.Mock).mockResolvedValue(mockClients);
 
     const { result } = renderHook(() => useDashboardData(), { wrapper });
 
@@ -118,7 +121,7 @@ describe('useDashboardData', () => {
   it('should compute conversionRate correctly', async () => {
     (dashboardRepo.getDashboardStats as jest.Mock).mockResolvedValue(mockStats);
     (settingsRepo.getSettings as jest.Mock).mockResolvedValue(mockSettings);
-    (dashboardRepo.getClients as jest.Mock).mockResolvedValue(mockClients);
+    (clientsRepo.getClients as jest.Mock).mockResolvedValue(mockClients);
 
     const { result } = renderHook(() => useDashboardData(), { wrapper });
 
@@ -133,7 +136,7 @@ describe('useDashboardData', () => {
   it('should handle empty clients list', async () => {
     (dashboardRepo.getDashboardStats as jest.Mock).mockResolvedValue(mockStats);
     (settingsRepo.getSettings as jest.Mock).mockResolvedValue(mockSettings);
-    (dashboardRepo.getClients as jest.Mock).mockResolvedValue([]);
+    (clientsRepo.getClients as jest.Mock).mockResolvedValue([]);
 
     const { result } = renderHook(() => useDashboardData(), { wrapper });
 
@@ -151,7 +154,7 @@ describe('useDashboardData', () => {
       new Error('Failed to fetch stats')
     );
     (settingsRepo.getSettings as jest.Mock).mockResolvedValue(mockSettings);
-    (dashboardRepo.getClients as jest.Mock).mockResolvedValue(mockClients);
+    (clientsRepo.getClients as jest.Mock).mockResolvedValue(mockClients);
 
     const { result } = renderHook(() => useDashboardData(), { wrapper });
 
@@ -167,7 +170,7 @@ describe('useDashboardData', () => {
     (settingsRepo.getSettings as jest.Mock).mockRejectedValue(
       new Error('Failed to fetch settings')
     );
-    (dashboardRepo.getClients as jest.Mock).mockResolvedValue(mockClients);
+    (clientsRepo.getClients as jest.Mock).mockResolvedValue(mockClients);
 
     const { result } = renderHook(() => useDashboardData(), { wrapper });
 
@@ -181,7 +184,7 @@ describe('useDashboardData', () => {
   it('should use correct query keys', () => {
     (dashboardRepo.getDashboardStats as jest.Mock).mockResolvedValue(mockStats);
     (settingsRepo.getSettings as jest.Mock).mockResolvedValue(mockSettings);
-    (dashboardRepo.getClients as jest.Mock).mockResolvedValue(mockClients);
+    (clientsRepo.getClients as jest.Mock).mockResolvedValue(mockClients);
 
     renderHook(() => useDashboardData(), { wrapper });
 
