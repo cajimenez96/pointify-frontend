@@ -18,34 +18,24 @@ import {
 } from "@/components/ui/dialog";
 import { Gift, Lock, AlertCircle, Package } from "lucide-react";
 import { useRedeemPoints } from "../hooks/useRedeemPoints";
+import { useSearchClient } from "../hooks/useSearchClient";
 import { useRewards } from "@/app/admin/settings/hooks/useRewards";
 import { ClientSearchCard } from "./ClientSearchCard";
-import type { ClientSummary } from "@/repositories/transactions/types";
+import type { ClientSearchResult } from "../types";
 import type { Reward } from "@/repositories/admin/settings/types";
 
 export function RedeemTab() {
-  const [selectedClient, setSelectedClient] = useState<ClientSummary | null>(
-    null,
-  );
+  const [selectedClient, setSelectedClient] =
+    useState<ClientSearchResult | null>(null);
   const [selectedReward, setSelectedReward] = useState<Reward | null>(null);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
 
   const redeemMutation = useRedeemPoints();
+  const searchMutation = useSearchClient();
   const { rewards, isLoading: loadingRewards } = useRewards(true); // Active only
 
-  const handleClientFound = (client: ClientSummary) => {
+  const handleClientFound = (client: ClientSearchResult) => {
     setSelectedClient(client);
-  };
-
-  // Mock search function
-  const mockSearchClient = async (dni: string): Promise<ClientSummary> => {
-    return {
-      dni,
-      name: `Cliente ${dni}`,
-      status: "ACTIVE",
-      currentPoints: 150, // Mock data
-      totalAccumulated: 500,
-    };
   };
 
   const handleRewardClick = (reward: Reward) => {
@@ -103,8 +93,8 @@ export function RedeemTab() {
       {/* Client Search */}
       <ClientSearchCard
         onClientFound={handleClientFound}
-        onSearchDni={mockSearchClient}
-        isLoading={redeemMutation.isPending}
+        onSearch={searchMutation.mutateAsync}
+        isLoading={searchMutation.isPending}
       />
 
       {/* Rewards Grid - Only shown when client is selected */}
