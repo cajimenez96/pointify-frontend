@@ -20,39 +20,39 @@ export function CompaniesTable({
 }: CompaniesTableProps) {
   if (isLoading) {
     return (
-      <Card className="bg-slate-800 border-slate-700 p-8">
+      <Card className="p-8">
         <div className="flex items-center justify-center">
-          <div className="w-12 h-12 border-4 border-violet-600 border-t-transparent rounded-full animate-spin" />
+          <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />
         </div>
       </Card>
     );
   }
 
   return (
-    <Card className="bg-slate-800 border-slate-700 overflow-hidden">
+    <Card className="overflow-hidden">
       <div className="overflow-x-auto">
         <table className="w-full">
-          <thead className="bg-slate-900 border-b border-slate-700">
+          <thead className="bg-muted border-b">
             <tr>
-              <th className="text-left p-4 text-slate-300 font-semibold">
+              <th className="text-left p-4 text-muted-foreground font-semibold text-xs uppercase tracking-wider">
                 Código
               </th>
-              <th className="text-left p-4 text-slate-300 font-semibold">
+              <th className="text-left p-4 text-muted-foreground font-semibold text-xs uppercase tracking-wider">
                 Razón Social
               </th>
-              <th className="text-left p-4 text-slate-300 font-semibold">
+              <th className="text-left p-4 text-muted-foreground font-semibold text-xs uppercase tracking-wider">
                 CUIT/CUIL
               </th>
-              <th className="text-left p-4 text-slate-300 font-semibold">
+              <th className="text-left p-4 text-muted-foreground font-semibold text-xs uppercase tracking-wider">
                 Email
               </th>
-              <th className="text-left p-4 text-slate-300 font-semibold">
+              <th className="text-left p-4 text-muted-foreground font-semibold text-xs uppercase tracking-wider">
                 Estado
               </th>
-              <th className="text-left p-4 text-slate-300 font-semibold">
+              <th className="text-left p-4 text-muted-foreground font-semibold text-xs uppercase tracking-wider">
                 Creada
               </th>
-              <th className="text-left p-4 text-slate-300 font-semibold">
+              <th className="text-left p-4 text-muted-foreground font-semibold text-xs uppercase tracking-wider">
                 Acciones
               </th>
             </tr>
@@ -60,7 +60,7 @@ export function CompaniesTable({
           <tbody>
             {companies.length === 0 ? (
               <tr>
-                <td colSpan={7} className="text-center p-8 text-slate-400">
+                <td colSpan={7} className="text-center p-8 text-muted-foreground">
                   No hay empresas creadas
                 </td>
               </tr>
@@ -79,8 +79,8 @@ export function CompaniesTable({
 
       {/* Paginación info */}
       {pagination && pagination.total > 0 && (
-        <div className="border-t border-slate-700 p-4">
-          <p className="text-sm text-slate-400 text-center">
+        <div className="border-t p-4">
+          <p className="text-sm text-muted-foreground text-center">
             Mostrando {companies.length} de {pagination.total} empresas
           </p>
         </div>

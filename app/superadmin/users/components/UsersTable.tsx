@@ -20,16 +20,16 @@ export function UsersTable({
 }: UsersTableProps) {
   if (isLoading) {
     return (
-      <Card className="p-8 bg-slate-800/50 border-slate-700">
-        <div className="text-center text-slate-400">Cargando usuarios...</div>
+      <Card className="p-8">
+        <div className="text-center text-muted-foreground">Cargando usuarios...</div>
       </Card>
     );
   }
 
   if (users.length === 0) {
     return (
-      <Card className="p-8 bg-slate-800/50 border-slate-700">
-        <div className="text-center text-slate-400">
+      <Card className="p-8">
+        <div className="text-center text-muted-foreground">
           No se encontraron usuarios
         </div>
       </Card>
@@ -37,30 +37,30 @@ export function UsersTable({
   }
 
   return (
-    <Card className="overflow-hidden bg-slate-800/50 border-slate-700">
+    <Card className="overflow-hidden">
       <div className="overflow-x-auto">
         <table className="w-full">
-          <thead className="bg-slate-900/50 border-b border-slate-700">
+          <thead className="bg-muted border-b">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Usuario
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Nombre
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 DNI
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Empresa
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Rol
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Estado
               </th>
-              <th className="px-6 py-3 text-right text-xs font-medium text-slate-400 uppercase tracking-wider">
+              <th className="px-6 py-3 text-right text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Acciones
               </th>
             </tr>
@@ -74,12 +74,12 @@ export function UsersTable({
       </div>
 
       {pagination && (
-        <div className="px-6 py-4 border-t border-slate-700 bg-slate-900/30">
+        <div className="px-6 py-4 border-t bg-muted/50">
           <div className="flex items-center justify-between">
-            <div className="text-sm text-slate-400">
+            <div className="text-sm text-muted-foreground">
               Mostrando {users.length} de {pagination.total} usuarios
             </div>
-            <div className="text-sm text-slate-400">
+            <div className="text-sm text-muted-foreground">
               Página {pagination.page} de {pagination.totalPages}
             </div>
           </div>

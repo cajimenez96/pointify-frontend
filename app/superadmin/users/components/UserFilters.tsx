@@ -53,11 +53,11 @@ export function UserFilters({ onFilterChange, isLoading }: UserFiltersProps) {
   };
 
   return (
-    <Card className="p-6 bg-slate-800/50 border-slate-700">
+    <Card className="p-6">
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         {/* Username Filter */}
         <div className="space-y-2">
-          <Label htmlFor="username" className="text-slate-300">
+          <Label htmlFor="username">
             Usuario
           </Label>
           <Input
@@ -67,13 +67,12 @@ export function UserFilters({ onFilterChange, isLoading }: UserFiltersProps) {
             onChange={(e) => setUsername(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleFilter()}
             disabled={isLoading}
-            className="bg-slate-900/50 border-slate-700 text-white placeholder:text-slate-500"
           />
         </div>
 
         {/* Company Filter */}
         <div className="space-y-2">
-          <Label htmlFor="company" className="text-slate-300">
+          <Label htmlFor="company">
             Empresa
           </Label>
           <Select
@@ -81,21 +80,17 @@ export function UserFilters({ onFilterChange, isLoading }: UserFiltersProps) {
             onValueChange={setSelectedCompany}
             disabled={isLoading || isLoadingCompanies}
           >
-            <SelectTrigger
-              id="company"
-              className="bg-slate-900/50 border-slate-700 text-white"
-            >
+            <SelectTrigger id="company">
               <SelectValue placeholder="Todas las empresas" />
             </SelectTrigger>
-            <SelectContent className="bg-slate-800 border-slate-700 text-white">
-              <SelectItem value="all" className="text-white hover:bg-slate-700">
+            <SelectContent>
+              <SelectItem value="all">
                 Todas las empresas
               </SelectItem>
               {companiesData?.data.map((company) => (
                 <SelectItem
                   key={company._id}
                   value={company._id}
-                  className="text-white hover:bg-slate-700"
                 >
                   {company.businessName}
                 </SelectItem>
@@ -106,7 +101,7 @@ export function UserFilters({ onFilterChange, isLoading }: UserFiltersProps) {
 
         {/* Role Filter */}
         <div className="space-y-2">
-          <Label htmlFor="role" className="text-slate-300">
+          <Label htmlFor="role">
             Rol
           </Label>
           <Select
@@ -114,32 +109,20 @@ export function UserFilters({ onFilterChange, isLoading }: UserFiltersProps) {
             onValueChange={setSelectedRole}
             disabled={isLoading}
           >
-            <SelectTrigger
-              id="role"
-              className="bg-slate-900/50 border-slate-700 text-white"
-            >
+            <SelectTrigger id="role">
               <SelectValue placeholder="Todos los roles" />
             </SelectTrigger>
-            <SelectContent className="bg-slate-800 border-slate-700 text-white">
-              <SelectItem value="all" className="text-white hover:bg-slate-700">
+            <SelectContent>
+              <SelectItem value="all">
                 Todos los roles
               </SelectItem>
-              <SelectItem
-                value="admin"
-                className="text-white hover:bg-slate-700"
-              >
+              <SelectItem value="admin">
                 Admin
               </SelectItem>
-              <SelectItem
-                value="cashier"
-                className="text-white hover:bg-slate-700"
-              >
+              <SelectItem value="cashier">
                 Cashier
               </SelectItem>
-              <SelectItem
-                value="superadmin"
-                className="text-white hover:bg-slate-700"
-              >
+              <SelectItem value="superadmin">
                 SuperAdmin
               </SelectItem>
             </SelectContent>
@@ -151,7 +134,7 @@ export function UserFilters({ onFilterChange, isLoading }: UserFiltersProps) {
           <Button
             onClick={handleFilter}
             disabled={isLoading}
-            className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
+            className="flex-1"
           >
             Filtrar
           </Button>
@@ -159,7 +142,6 @@ export function UserFilters({ onFilterChange, isLoading }: UserFiltersProps) {
             onClick={handleClear}
             variant="outline"
             disabled={isLoading}
-            className="border-slate-600 text-slate-300 hover:bg-slate-700 hover:text-white"
           >
             Limpiar
           </Button>

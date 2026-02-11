@@ -64,19 +64,15 @@ describe("StatCard", () => {
   });
 
   it("should have correct styling classes", () => {
-    const { container } = render(<StatCard {...defaultProps} />);
-
-    // Check main card styling
-    expect(container.querySelector(".bg-slate-800")).toBeInTheDocument();
-    expect(container.querySelector(".border-slate-700")).toBeInTheDocument();
+    render(<StatCard {...defaultProps} />);
 
     // Check title styling
     const title = screen.getByText("Total Companies");
-    expect(title).toHaveClass("text-slate-400", "text-sm");
+    expect(title).toHaveClass("text-muted-foreground", "text-sm");
 
     // Check value styling
     const value = screen.getByText("10");
-    expect(value).toHaveClass("text-3xl", "font-bold", "text-white");
+    expect(value).toHaveClass("text-3xl", "font-bold", "text-foreground");
   });
 
   it("should render icon in correct container", () => {

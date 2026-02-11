@@ -17,9 +17,9 @@ interface UserRowProps {
 export function UserRow({ user, onEdit }: UserRowProps) {
   const getRoleBadge = (role: string) => {
     const roleStyles = {
-      superadmin: "bg-purple-500/20 text-purple-300 border-purple-500/30",
-      admin: "bg-blue-500/20 text-blue-300 border-blue-500/30",
-      cashier: "bg-green-500/20 text-green-300 border-green-500/30",
+      superadmin: "bg-purple-100 text-purple-700 border-purple-200",
+      admin: "bg-blue-100 text-blue-700 border-blue-200",
+      cashier: "bg-green-100 text-green-700 border-green-200",
     };
 
     return (
@@ -36,14 +36,14 @@ export function UserRow({ user, onEdit }: UserRowProps) {
     return isActive ? (
       <Badge
         variant="outline"
-        className="bg-green-500/20 text-green-300 border-green-500/30"
+        className="bg-green-100 text-green-700 border-green-200"
       >
         Activo
       </Badge>
     ) : (
       <Badge
         variant="outline"
-        className="bg-red-500/20 text-red-300 border-red-500/30"
+        className="bg-red-100 text-red-700 border-red-200"
       >
         Inactivo
       </Badge>
@@ -51,21 +51,21 @@ export function UserRow({ user, onEdit }: UserRowProps) {
   };
 
   return (
-    <tr className="border-b border-slate-700 hover:bg-slate-800/30 transition-colors">
+    <tr className="border-b hover:bg-muted/50 transition-colors">
       <td className="px-6 py-4">
-        <div className="text-white font-medium">{user.username}</div>
+        <div className="text-foreground font-medium">{user.username}</div>
       </td>
       <td className="px-6 py-4">
-        <div className="text-slate-300">{user.name}</div>
+        <div className="text-foreground">{user.name}</div>
       </td>
       <td className="px-6 py-4">
-        <div className="text-slate-300">{user.dni}</div>
+        <div className="text-foreground">{user.dni}</div>
       </td>
       <td className="px-6 py-4">
-        <div className="text-slate-300">
+        <div className="text-foreground">
           {user.company?.businessName || "N/A"}
         </div>
-        <div className="text-xs text-slate-500">
+        <div className="text-xs text-muted-foreground">
           {user.company?.companyCode || ""}
         </div>
       </td>
@@ -79,18 +79,15 @@ export function UserRow({ user, onEdit }: UserRowProps) {
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="h-8 w-8 p-0 text-slate-400 hover:text-white"
+                  className="h-8 w-8 p-0"
                 >
                   <MoreVertical className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent
-                align="end"
-                className="bg-slate-800 border-slate-700 text-white"
-              >
+              <DropdownMenuContent align="end">
                 <DropdownMenuItem
                   onClick={() => onEdit(user)}
-                  className="hover:bg-slate-700 cursor-pointer"
+                  className="cursor-pointer"
                 >
                   Editar
                 </DropdownMenuItem>

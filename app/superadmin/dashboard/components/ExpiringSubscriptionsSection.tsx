@@ -7,9 +7,9 @@ interface ExpiringSubscriptionsSectionProps {
 }
 
 function getUrgencyColor(days: number): string {
-  if (days < 7) return "bg-red-500/20 text-red-400 border-red-500/50";
-  if (days < 15) return "bg-orange-500/20 text-orange-400 border-orange-500/50";
-  return "bg-yellow-500/20 text-yellow-400 border-yellow-500/50";
+  if (days < 7) return "bg-red-100 text-red-700 border-red-200";
+  if (days < 15) return "bg-orange-100 text-orange-700 border-orange-200";
+  return "bg-yellow-100 text-yellow-700 border-yellow-200";
 }
 
 function formatDate(dateString: string): string {
@@ -24,20 +24,20 @@ export function ExpiringSubscriptionsSection({
   subscriptions,
 }: ExpiringSubscriptionsSectionProps) {
   return (
-    <Card className="bg-slate-800 border-slate-700 p-6">
+    <Card className="p-6">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xl font-semibold text-white flex items-center gap-2">
+        <h2 className="text-xl font-semibold text-foreground flex items-center gap-2">
           <span className="text-2xl">⚠️</span>
           Suscripciones por Vencer
         </h2>
-        <Badge variant="outline" className="text-slate-400 border-slate-600">
+        <Badge variant="outline">
           Próximos 30 días
         </Badge>
       </div>
 
       {subscriptions.length === 0 ? (
         <div className="text-center py-8">
-          <p className="text-slate-400">
+          <p className="text-muted-foreground">
             ✅ No hay suscripciones próximas a vencer
           </p>
         </div>
@@ -46,20 +46,20 @@ export function ExpiringSubscriptionsSection({
           {subscriptions.map((subscription) => (
             <div
               key={subscription._id}
-              className="bg-slate-900/50 border border-slate-700 rounded-lg p-4 hover:bg-slate-900/70 transition-colors"
+              className="bg-muted/50 border border-border rounded-lg p-4 hover:bg-muted transition-colors"
             >
               <div className="flex items-center justify-between gap-4">
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1">
-                    <span className="text-slate-400 text-sm font-mono">
+                    <span className="text-muted-foreground text-sm font-mono">
                       {subscription.companyCode}
                     </span>
-                    <span className="text-slate-600">•</span>
-                    <span className="text-white font-medium truncate">
+                    <span className="text-muted-foreground">•</span>
+                    <span className="text-foreground font-medium truncate">
                       {subscription.businessName}
                     </span>
                   </div>
-                  <p className="text-slate-500 text-sm">
+                  <p className="text-muted-foreground text-sm">
                     Vence: {formatDate(subscription.subscriptionEndDate)}
                   </p>
                 </div>

@@ -43,17 +43,16 @@ export function CompanyFilters({
   };
 
   return (
-    <Card className="bg-slate-800 border-slate-700 p-4">
+    <Card className="p-4">
       <div className="flex gap-4 items-end">
         {/* Búsqueda */}
         <div className="flex-1">
-          <Label className="text-slate-200 mb-2 block">Buscar Empresa</Label>
+          <Label className="mb-2 block">Buscar Empresa</Label>
           <Input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Código o nombre de empresa..."
-            className="bg-slate-700 border-slate-600 text-white"
             onKeyDown={(e) => {
               if (e.key === "Enter") {
                 handleFilter();
@@ -64,12 +63,12 @@ export function CompanyFilters({
 
         {/* Estado */}
         <div className="w-[200px]">
-          <Label className="text-slate-200 mb-2 block">Estado</Label>
+          <Label className="mb-2 block">Estado</Label>
           <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="bg-slate-700 border-slate-600 text-white">
+            <SelectTrigger>
               <SelectValue placeholder="Estado" />
             </SelectTrigger>
-            <SelectContent className="bg-slate-800 border-slate-700 text-white">
+            <SelectContent>
               <SelectItem value="all">Todos</SelectItem>
               <SelectItem value="active">Activas</SelectItem>
               <SelectItem value="inactive">Inactivas</SelectItem>
@@ -82,7 +81,6 @@ export function CompanyFilters({
           <Button
             type="button"
             onClick={handleFilter}
-            className="bg-violet-600 hover:bg-violet-700"
             disabled={isLoading}
           >
             Filtrar
@@ -91,7 +89,6 @@ export function CompanyFilters({
             type="button"
             variant="outline"
             onClick={handleClear}
-            className="border-slate-600 text-slate-300 hover:bg-slate-700"
             disabled={isLoading}
           >
             Limpiar

@@ -15,23 +15,23 @@ interface CompanyRowProps {
 
 export function CompanyRow({ company, onEdit }: CompanyRowProps) {
   return (
-    <tr className="border-b border-slate-700 hover:bg-slate-700/50">
-      <td className="p-4 text-white font-mono">{company.companyCode}</td>
-      <td className="p-4 text-white">{company.businessName}</td>
-      <td className="p-4 text-slate-300">{company.cuitCuil}</td>
-      <td className="p-4 text-slate-300">{company.contactInfo.email}</td>
+    <tr className="border-b hover:bg-muted/50 transition-colors">
+      <td className="p-4 text-foreground font-mono">{company.companyCode}</td>
+      <td className="p-4 text-foreground">{company.businessName}</td>
+      <td className="p-4 text-foreground">{company.cuitCuil}</td>
+      <td className="p-4 text-foreground">{company.contactInfo.email}</td>
       <td className="p-4">
         <span
           className={`inline-block px-3 py-1 rounded-full text-sm ${
             company.isActive
-              ? "bg-green-900/50 text-green-300"
-              : "bg-red-900/50 text-red-300"
+              ? "bg-green-100 text-green-700"
+              : "bg-red-100 text-red-700"
           }`}
         >
           {company.isActive ? "Activa" : "Inactiva"}
         </span>
       </td>
-      <td className="p-4 text-slate-400 text-sm">
+      <td className="p-4 text-muted-foreground text-sm">
         {new Date(company.createdAt).toLocaleDateString("es-AR")}
       </td>
       <td className="p-4">
@@ -40,18 +40,15 @@ export function CompanyRow({ company, onEdit }: CompanyRowProps) {
             <Button
               variant="ghost"
               size="sm"
-              className="h-8 w-8 p-0 text-slate-400 hover:text-white"
+              className="h-8 w-8 p-0"
             >
               <MoreVertical className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent
-            align="end"
-            className="bg-slate-800 border-slate-700 text-white"
-          >
+          <DropdownMenuContent align="end">
             <DropdownMenuItem
               onClick={onEdit}
-              className="cursor-pointer hover:bg-slate-700"
+              className="cursor-pointer"
             >
               Actualizar datos
             </DropdownMenuItem>

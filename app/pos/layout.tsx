@@ -28,11 +28,7 @@ const pageNames: Record<string, string> = {
   redeem: "Canjear Premio",
 };
 
-export default function POSLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function POSLayout({ children }: { children: React.ReactNode }) {
   const { user, isLoading, initializeAuth } = useAuthStore();
   const router = useRouter();
   const pathname = usePathname();
@@ -72,7 +68,9 @@ export default function POSLayout({
   }
 
   const currentPage = pathname.split("/").pop() || "";
-  const pageName = pageNames[currentPage] || currentPage.charAt(0).toUpperCase() + currentPage.slice(1);
+  const pageName =
+    pageNames[currentPage] ||
+    currentPage.charAt(0).toUpperCase() + currentPage.slice(1);
 
   return (
     <SidebarProvider>
@@ -85,9 +83,7 @@ export default function POSLayout({
             <Breadcrumb>
               <BreadcrumbList>
                 <BreadcrumbItem className="hidden md:block">
-                  <BreadcrumbLink href="/pos/earn">
-                    Pointify POS
-                  </BreadcrumbLink>
+                  <BreadcrumbLink href="/pos/earn">Pointify POS</BreadcrumbLink>
                 </BreadcrumbItem>
                 <BreadcrumbSeparator className="hidden md:block" />
                 <BreadcrumbItem>

@@ -13,8 +13,8 @@ export default function SuperAdminDashboardPage() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-white mb-2">Dashboard Global</h1>
-        <p className="text-slate-400">Vista general del sistema multi-tenant</p>
+        <h1 className="text-3xl font-bold text-foreground mb-2">Dashboard Global</h1>
+        <p className="text-muted-foreground">Vista general del sistema multi-tenant</p>
       </div>
 
       {/* Loading State */}
@@ -22,10 +22,10 @@ export default function SuperAdminDashboardPage() {
         <div className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[...Array(6)].map((_, i) => (
-              <Card key={i} className="bg-slate-800 border-slate-700 p-6">
+              <Card key={i} className="p-6">
                 <div className="animate-pulse space-y-3">
-                  <div className="h-4 bg-slate-700 rounded w-1/2"></div>
-                  <div className="h-8 bg-slate-700 rounded w-3/4"></div>
+                  <div className="h-4 bg-muted rounded w-1/2"></div>
+                  <div className="h-8 bg-muted rounded w-3/4"></div>
                 </div>
               </Card>
             ))}
@@ -35,14 +35,14 @@ export default function SuperAdminDashboardPage() {
 
       {/* Error State */}
       {error && (
-        <Card className="bg-red-900/20 border-red-800 p-6">
+        <Card className="bg-red-50 border-red-200 p-6">
           <div className="flex items-center gap-3">
             <span className="text-3xl">⚠️</span>
             <div>
-              <h3 className="text-red-400 font-semibold mb-1">
+              <h3 className="text-red-600 font-semibold mb-1">
                 Error al cargar estadísticas
               </h3>
-              <p className="text-red-300 text-sm">
+              <p className="text-red-500 text-sm">
                 {error instanceof Error ? error.message : "Error desconocido"}
               </p>
             </div>

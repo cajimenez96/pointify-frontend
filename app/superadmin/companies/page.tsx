@@ -52,15 +52,12 @@ export default function CompaniesPage() {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="text-center">
-          <p className="text-red-400 mb-4">
+          <p className="text-destructive mb-4">
             {error instanceof Error
               ? error.message
               : "Error al cargar empresas"}
           </p>
-          <Button
-            onClick={() => window.location.reload()}
-            className="bg-violet-600 hover:bg-violet-700"
-          >
+          <Button onClick={() => window.location.reload()}>
             Reintentar
           </Button>
         </div>
@@ -73,16 +70,13 @@ export default function CompaniesPage() {
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-white mb-2">Empresas</h1>
-          <p className="text-slate-400">
+          <h1 className="text-3xl font-bold text-foreground mb-2">Empresas</h1>
+          <p className="text-muted-foreground">
             Gestiona todas las empresas del sistema
           </p>
         </div>
 
-        <Button
-          onClick={handleCreateClick}
-          className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700"
-        >
+        <Button onClick={handleCreateClick}>
           + Nueva Empresa
         </Button>
       </div>
