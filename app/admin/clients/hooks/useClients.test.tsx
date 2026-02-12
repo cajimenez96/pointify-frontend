@@ -2,11 +2,10 @@ import { renderHook, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useClients } from "./useClients";
 import { getClients } from "@/repositories/clients/clients";
-import { describe, it, expect, vi, beforeEach } from "vitest";
 
 // Mock repository
-vi.mock("@/repositories/clients/clients", () => ({
-  getClients: vi.fn(),
+jest.mock("@/repositories/clients/clients", () => ({
+  getClients: jest.fn(),
 }));
 
 // Wrapper for TanStack Query
@@ -25,7 +24,7 @@ const createWrapper = () => {
 
 describe("useClients Hook", () => {
   beforeEach(() => {
-    vi.clearAllMocks();
+    jest.clearAllMocks();
   });
 
   it("should return clients data on success", async () => {
@@ -34,7 +33,7 @@ describe("useClients Hook", () => {
       { _id: "2", name: "Client 2", dni: "456", status: "PENDING" },
     ];
 
-    (getClients as any).mockResolvedValue(mockClients);
+    (getClients as jest.Mock).mockResolvedValue(mockClients);
 
     const { result } = renderHook(() => useClients(), {
       wrapper: createWrapper(),
@@ -52,7 +51,7 @@ describe("useClients Hook", () => {
 
   it("should handle errors", async () => {
     const mockError = new Error("Failed to fetch");
-    (getClients as any).mockRejectedValue(mockError);
+    (getClients as jest.Mock).mockRejectedValue(mockError);
 
     const { result } = renderHook(() => useClients(), {
       wrapper: createWrapper(),
