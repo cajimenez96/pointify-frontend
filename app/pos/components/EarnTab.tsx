@@ -1,0 +1,190 @@
+/**
+ * EarnTab Component
+ * Tab for adding points to clients (EARN operation).
+ * Searches client via API — if not found, allows continuing (shadow user created on earn).
+ */
+
+"use client";
+
+import { useState, useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Card } from "@/components/ui/card";
+import { Plus, TrendingUp } from "lucide-react";
+import { useEarnPoints } from "../hooks/useEarnPoints";
+import { useSearchClient } from "../hooks/useSearchClient";
+import { useProducts } from "@/app/admin/settings/hooks/useProducts";
+import { ClientSearchCard } from "./ClientSearchCard";
+import { earnPointsSchema, type EarnPointsForm } from "../schemas";
+import type { ClientSearchResult } from "../types";
+
+export function EarnTab() {
+  const [selectedClient, setSelectedClient] =
+    useState<ClientSearchResult | null>(null);
+  const [previewPoints, setPreviewPoints] = useState(0);
+
+  const earnMutation = useEarnPoints();
+  const searchMutation = useSearchClient();
+  const { products, isLoading: loadingProducts } = useProducts();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    watch,
+    setValue,
+    reset,
+  } = useForm<EarnPointsForm>({
+    resolver: zodResolver(earnPointsSchema),
+  });
+
+  const selectedProductName = watch("productName");
+
+  useEffect(() => {
+    if (selectedProductName) {
+      const product = products.find(
+        (p) => p.productName === selectedProductName,
+      );
+      setPreviewPoints(product?.pointsValue || 0);
+    } else {
+      setPreviewPoints(0);
+    }
+  }, [selectedProductName, products]);
+
+  const onSubmit = async (data: EarnPointsForm) => {
+    if (!selectedClient) return;
+
+    try {
+      await earnMutation.mutateAsync({
+        dni: data.dni,
+        saleCode: data.saleCode,
+        productName: data.productName,
+      });
+
+      reset();
+      setSelectedClient(null);
+      setPreviewPoints(0);
+    } catch (error) {
+      // Error is handled in hook with toast
+    }
+  };
+
+  const handleClientFound = (client: ClientSearchResult) => {
+    setSelectedClient(client);
+    setValue("dni", client.dni);
+  };
+
+  return (
+    <div className="space-y-6">
+      {/* Client Search */}
+      <ClientSearchCard
+        onClientFound={handleClientFound}
+        onSearch={searchMutation.mutateAsync}
+        isLoading={searchMutation.isPending}
+      />
+
+      {/* Sale Form - Shown when client is found (exists or not) */}
+      {selectedClient && (
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          <Card className="p-6">
+            <h3 className="text-lg font-semibold mb-4">Registrar Venta</h3>
+
+            <div className="space-y-4">
+              {/* Sale Code */}
+              <div>
+                <Label htmlFor="saleCode">Código de Venta</Label>
+                <Input
+                  id="saleCode"
+                  {...register("saleCode")}
+                  placeholder="ej: SALE-2026-001"
+                  className="mt-1"
+                  disabled={earnMutation.isPending}
+                />
+                {errors.saleCode && (
+                  <p className="text-destructive text-sm mt-1">
+                    {errors.saleCode.message}
+                  </p>
+                )}
+              </div>
+
+              {/* Product Selection */}
+              <div>
+                <Label htmlFor="productName">Producto</Label>
+                <Select
+                  onValueChange={(value) => setValue("productName", value)}
+                  disabled={earnMutation.isPending || loadingProducts}
+                >
+                  <SelectTrigger className="mt-1">
+                    <SelectValue placeholder="Seleccionar producto..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {products.map((product) => (
+                      <SelectItem
+                        key={product.productName}
+                        value={product.productName}
+                      >
+                        {product.productName} (+{product.pointsValue} pts)
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {errors.productName && (
+                  <p className="text-destructive text-sm mt-1">
+                    {errors.productName.message}
+                  </p>
+                )}
+              </div>
+            </div>
+          </Card>
+
+          {/* Preview */}
+          {previewPoints > 0 && (
+            <Card className="p-4 border-green-200 bg-green-50">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-muted-foreground">
+                    Puntos a sumar:
+                  </p>
+                  <div className="flex items-center gap-2 mt-1">
+                    <TrendingUp className="h-5 w-5 text-green-600" />
+                    <span className="text-2xl font-bold text-green-600">
+                      +{previewPoints}
+                    </span>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="text-sm text-muted-foreground">Nuevo saldo:</p>
+                  <span className="text-xl font-semibold">
+                    {selectedClient.currentPoints + previewPoints} puntos
+                  </span>
+                </div>
+              </div>
+            </Card>
+          )}
+
+          {/* Submit Button */}
+          <Button
+            type="submit"
+            disabled={
+              earnMutation.isPending || !selectedClient || previewPoints === 0
+            }
+            className="w-full h-14 text-lg bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700"
+          >
+            <Plus className="h-5 w-5 mr-2" />
+            {earnMutation.isPending ? "Registrando..." : "Registrar Venta"}
+          </Button>
+        </form>
+      )}
+    </div>
+  );
+}
