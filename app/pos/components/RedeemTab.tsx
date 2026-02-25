@@ -95,14 +95,13 @@ export function RedeemTab() {
         onClientFound={handleClientFound}
         onSearch={searchMutation.mutateAsync}
         isLoading={searchMutation.isPending}
+        mode="redeem"
       />
 
       {/* Rewards Grid - Only shown when client is selected */}
       {selectedClient && (
         <div>
-          <h3 className="text-xl font-semibold mb-4">
-            Premios Disponibles
-          </h3>
+          <h3 className="text-xl font-semibold mb-4">Premios Disponibles</h3>
 
           {loadingRewards ? (
             <div className="text-center py-12">
@@ -221,9 +220,7 @@ export function RedeemTab() {
       <Dialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle className="text-xl">
-              Confirmar Canje
-            </DialogTitle>
+            <DialogTitle className="text-xl">Confirmar Canje</DialogTitle>
             <DialogDescription>
               ¿Estás seguro de canjear este premio?
             </DialogDescription>
@@ -233,9 +230,7 @@ export function RedeemTab() {
             <div className="space-y-4 py-4">
               <div className="bg-gray-50 rounded-lg p-4">
                 <p className="text-sm text-muted-foreground mb-1">Premio:</p>
-                <p className="text-lg font-semibold">
-                  {selectedReward.name}
-                </p>
+                <p className="text-lg font-semibold">{selectedReward.name}</p>
               </div>
 
               <div className="bg-gray-50 rounded-lg p-4">
@@ -246,7 +241,9 @@ export function RedeemTab() {
               </div>
 
               <div className="bg-gray-50 rounded-lg p-4">
-                <p className="text-sm text-muted-foreground mb-1">Saldo restante:</p>
+                <p className="text-sm text-muted-foreground mb-1">
+                  Saldo restante:
+                </p>
                 <p className="text-xl font-semibold text-green-600">
                   {selectedClient.currentPoints - selectedReward.pointsCost}{" "}
                   puntos
@@ -266,7 +263,7 @@ export function RedeemTab() {
             <Button
               onClick={handleConfirmRedeem}
               disabled={redeemMutation.isPending}
-              className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700"
+              className="bg-linear-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700"
             >
               {redeemMutation.isPending ? "Canjeando..." : "Confirmar Canje"}
             </Button>
