@@ -15,11 +15,20 @@ import { Button } from "@/components/ui/button";
 import { UserPlus, Sparkles } from "lucide-react";
 import { useClientRegister } from "../../hooks/useClientRegister";
 
-const registerSchema = z.object({
-  name: z.string().min(3, "El nombre debe tener al menos 3 caracteres"),
-  email: z.string().email("Email inválido"),
-  phone: z.string().min(9, "Teléfono inválido"),
-});
+const registerSchema = z
+  .object({
+    name: z.string().min(3, "El nombre debe tener al menos 3 caracteres"),
+    email: z.string().email("Email inválido"),
+    phone: z.string().min(9, "Teléfono inválido"),
+    password: z
+      .string()
+      .min(6, "La contraseña debe tener al menos 6 caracteres"),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Las contraseñas no coinciden",
+    path: ["confirmPassword"],
+  });
 
 type RegisterForm = z.infer<typeof registerSchema>;
 
@@ -45,10 +54,11 @@ export function ClientRegistrationForm({
   });
 
   const onSubmit = async (data: RegisterForm) => {
+    const { confirmPassword, ...rest } = data;
     await registerMutation.mutateAsync({
       dni,
       companyCode,
-      ...data,
+      ...rest,
     });
     onSuccess();
   };
@@ -57,7 +67,7 @@ export function ClientRegistrationForm({
     <div className="flex min-h-screen items-center justify-center bg-gray-100 p-4">
       <Card className="w-full max-w-md p-8 space-y-6 shadow-2xl relative overflow-hidden">
         {/* Decorative background element */}
-        <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-violet-600 to-purple-600" />
+        <div className="absolute top-0 left-0 w-full h-2 bg-linear-to-r from-violet-600 to-purple-600" />
 
         <div className="text-center space-y-2">
           <div className="w-16 h-16 bg-gray-100 rounded-full mx-auto flex items-center justify-center border">
@@ -84,6 +94,19 @@ export function ClientRegistrationForm({
           </div>
 
           <div className="space-y-2">
+            <Label htmlFor="phone">Teléfono</Label>
+            <Input
+              id="phone"
+              type="tel"
+              {...register("phone")}
+              placeholder="Ej: 999 888 777"
+            />
+            {errors.phone && (
+              <p className="text-destructive text-sm">{errors.phone.message}</p>
+            )}
+          </div>
+
+          <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
             <Input
               id="email"
@@ -97,25 +120,44 @@ export function ClientRegistrationForm({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="phone">Teléfono</Label>
+            <Label htmlFor="password">Contraseña</Label>
             <Input
-              id="phone"
-              type="tel"
-              {...register("phone")}
-              placeholder="Ej: 999 888 777"
+              id="password"
+              type="password"
+              {...register("password")}
+              placeholder="Mínimo 6 caracteres"
             />
-            {errors.phone && (
-              <p className="text-destructive text-sm">{errors.phone.message}</p>
+            {errors.password && (
+              <p className="text-destructive text-sm">
+                {errors.password.message}
+              </p>
+            )}
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="confirmPassword">Repetir Contraseña</Label>
+            <Input
+              id="confirmPassword"
+              type="password"
+              {...register("confirmPassword")}
+              placeholder="Repetí tu contraseña"
+            />
+            {errors.confirmPassword && (
+              <p className="text-destructive text-sm">
+                {errors.confirmPassword.message}
+              </p>
             )}
           </div>
 
           <Button
             type="submit"
             disabled={registerMutation.isPending}
-            className="w-full h-12 bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 font-semibold text-lg"
+            className="w-full h-12 bg-linear-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 font-semibold text-lg"
           >
             {registerMutation.isPending ? "Registrando..." : "Activar Cuenta"}
-            {!registerMutation.isPending && <UserPlus className="ml-2 h-5 w-5" />}
+            {!registerMutation.isPending && (
+              <UserPlus className="ml-2 h-5 w-5" />
+            )}
           </Button>
         </form>
       </Card>
