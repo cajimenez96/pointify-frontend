@@ -3,17 +3,18 @@
  * Combines stats, settings, and clients using TanStack Query
  */
 
-import { useQuery } from '@tanstack/react-query';
-import { getDashboardStats } from '@/repositories/dashboard/dashboard';
-import { getSettings } from '@/repositories/settings/settings';
-import { getClients } from '@/repositories/clients/clients';
-import type { DashboardStats } from '@/repositories/dashboard/types';
-import type { Client } from '@/repositories/clients/types';
-import type { Settings } from '@/repositories/settings/types';
+import { useQuery } from "@tanstack/react-query";
+import { getDashboardStats } from "@/repositories/dashboard/dashboard";
+import { getSettings } from "@/repositories/settings/settings";
+import { getClients } from "@/repositories/clients/clients";
+import type { DashboardStats } from "@/repositories/dashboard/types";
+import type { Client, ClientCompany } from "@/repositories/clients/types";
+import type { Settings } from "@/repositories/settings/types";
+import { adaptClientCompanyToClient } from "@/repositories/clients/adapters/adaptClientCompanyToClient";
 
 export function useDashboardStats() {
   return useQuery<DashboardStats>({
-    queryKey: ['admin', 'dashboard', 'stats'],
+    queryKey: ["admin", "dashboard", "stats"],
     queryFn: getDashboardStats,
     refetchOnWindowFocus: true,
     staleTime: 5 * 60 * 1000,
@@ -22,7 +23,7 @@ export function useDashboardStats() {
 
 export function useDashboardSettings() {
   return useQuery<Settings>({
-    queryKey: ['admin', 'settings'],
+    queryKey: ["admin", "settings"],
     queryFn: getSettings,
     refetchOnWindowFocus: true,
     staleTime: 5 * 60 * 1000,
@@ -30,9 +31,10 @@ export function useDashboardSettings() {
 }
 
 export function useDashboardClients() {
-  return useQuery<Client[]>({
-    queryKey: ['admin', 'clients'],
+  return useQuery<ClientCompany[], Error, Client[]>({
+    queryKey: ["admin", "clients"],
     queryFn: getClients,
+    select: adaptClientCompanyToClient,
     refetchOnWindowFocus: true,
     staleTime: 5 * 60 * 1000,
   });
@@ -47,8 +49,8 @@ export function useDashboardData() {
   const clientsQuery = useDashboardClients();
 
   const clients = clientsQuery.data ?? [];
-  const activeClients = clients.filter((c) => c.status === 'ACTIVE').length;
-  const shadowClients = clients.filter((c) => c.status === 'PENDING').length;
+  const activeClients = clients.filter((c) => c.status === "ACTIVE").length;
+  const shadowClients = clients.filter((c) => c.status === "PENDING").length;
   const conversionRate =
     clients.length > 0 ? (activeClients / clients.length) * 100 : 0;
 
@@ -59,7 +61,8 @@ export function useDashboardData() {
     activeClients,
     shadowClients,
     conversionRate,
-    isLoading: statsQuery.isLoading || settingsQuery.isLoading || clientsQuery.isLoading,
+    isLoading:
+      statsQuery.isLoading || settingsQuery.isLoading || clientsQuery.isLoading,
     error: statsQuery.error || settingsQuery.error || clientsQuery.error,
   };
 }
