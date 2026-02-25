@@ -1,5 +1,6 @@
-import type { ClientSummary } from '@/repositories/transactions/types';
+import type { ClientSummary } from "@/repositories/transactions/types";
 
 export interface ClientSearchResult extends ClientSummary {
   exists: boolean;
+  hasRelation: boolean; // false = existe en clients pero sin relación con esta empresa
 }

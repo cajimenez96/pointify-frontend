@@ -3,13 +3,13 @@
  * Handles client management and public client view (QR code)
  */
 
-import type { Reward } from '../settings/types';
+import type { Reward } from "../settings/types";
 
 // ============================================================================
 // CLIENT TYPES
 // ============================================================================
 
-export type ClientStatus = 'ACTIVE' | 'PENDING';
+export type ClientStatus = "ACTIVE" | "PENDING";
 
 export interface Client {
   _id: string;
@@ -24,6 +24,24 @@ export interface Client {
   isActive: boolean;
   createdAt: string;
   updatedAt?: string;
+}
+
+export interface ClientCompany {
+  _id: string;
+  companyId: string;
+  currentPoints: number;
+  totalAccumulated: number;
+  createdAt: string;
+  updatedAt?: string;
+
+  clientId: {
+    _id: string;
+    dni: string;
+    name: string;
+    email?: string;
+    phone?: string;
+    status: ClientStatus;
+  };
 }
 
 // ============================================================================
@@ -41,7 +59,8 @@ export interface CompanyInfo {
 }
 
 export interface ClientPublicResponse {
-  exists: boolean; // false if shadow user
+  exists: boolean; // cliente no existe en tabla clients
+  hasRelation: boolean; //existe en clients pero sin relación con esta empresa
   dni: string;
   name: string | null; // null if shadow user
   email?: string;
@@ -97,9 +116,9 @@ export class ClientError extends Error {
   constructor(
     message: string,
     public statusCode: number,
-    public details?: unknown
+    public details?: unknown,
   ) {
     super(message);
-    this.name = 'ClientError';
+    this.name = "ClientError";
   }
 }
