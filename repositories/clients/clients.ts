@@ -101,7 +101,7 @@ export async function completeProfile(
   } catch (error: any) {
     const message =
       error.response?.status === 404
-        ? "Cliente no encontrado o perfil ya completo"
+        ? "Cliente no relacionado a esta empresa"
         : "Error al completar perfil";
 
     throw new ClientError(
