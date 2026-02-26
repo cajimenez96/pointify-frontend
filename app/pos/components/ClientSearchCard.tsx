@@ -41,7 +41,7 @@ export function ClientSearchCard({
       const result = await onSearch(dni);
       setClient(result);
       // En redeem, si no tiene relación NO notificamos al padre (no habilitamos el formulario)
-      if (mode === "redeem" && result.exists && !result.hasRelation) {
+      if (mode === "redeem" && (!result.exists || !result.hasRelation)) {
         return;
       }
       onClientFound(result);
@@ -56,7 +56,6 @@ export function ClientSearchCard({
     setClient(null);
     setError("");
   };
-console.log(client)
   return (
     <Card className="p-6">
       <div className="space-y-4">
@@ -187,18 +186,38 @@ console.log(client)
         )}
         {/* CASO 3: Cliente no existe en absoluto */}
         {client && !client.exists && (
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+          <div
+            className={
+              mode === "earn"
+                ? "bg-blue-50 border border-blue-200 rounded-lg p-4"
+                : "bg-red-50 border border-red-200 rounded-lg p-4"
+            }
+          >
             <div className="flex items-center gap-3">
-              <div className="h-12 w-12 rounded-full bg-blue-500 flex items-center justify-center">
-                <UserPlus className="h-6 w-6 text-white" />
+              <div
+                className={`h-12 w-12 rounded-full flex items-center justify-center ${
+                  mode === "earn" ? "bg-blue-500" : "bg-red-400"
+                }`}
+              >
+                {mode === "earn" ? (
+                  <UserPlus className="h-6 w-6 text-white" />
+                ) : (
+                  <AlertTriangle className="h-6 w-6 text-white" />
+                )}
               </div>
               <div>
-                <h3 className="font-semibold text-lg">Cliente nuevo</h3>
+                <h3 className="font-semibold text-lg">
+                  {mode === "earn" ? "Cliente nuevo" : "Cliente no encontrado"}
+                </h3>
                 <p className="text-muted-foreground text-sm">
                   DNI: {client.dni}
                 </p>
-                <p className="text-blue-600 text-sm mt-1">
-                  Se registrará automáticamente al procesar la venta
+                <p
+                  className={`text-sm mt-1 ${mode === "earn" ? "text-blue-600" : "text-red-600"}`}
+                >
+                  {mode === "earn"
+                    ? "Se registrará automáticamente al procesar la venta"
+                    : "Este cliente no existe en el sistema."}
                 </p>
               </div>
             </div>
