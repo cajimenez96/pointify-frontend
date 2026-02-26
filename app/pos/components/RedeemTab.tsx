@@ -72,6 +72,10 @@ export function RedeemTab() {
     }
   };
 
+  const handleSearch = async (dni: string) => {
+    setSelectedClient(null);
+    return searchMutation.mutateAsync(dni);
+  };
   const getRewardStatus = (reward: Reward) => {
     if (!selectedClient) return "disabled";
 
@@ -93,7 +97,7 @@ export function RedeemTab() {
       {/* Client Search */}
       <ClientSearchCard
         onClientFound={handleClientFound}
-        onSearch={searchMutation.mutateAsync}
+        onSearch={handleSearch}
         isLoading={searchMutation.isPending}
         mode="redeem"
       />
