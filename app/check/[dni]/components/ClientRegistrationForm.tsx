@@ -15,20 +15,26 @@ import { Button } from "@/components/ui/button";
 import { UserPlus, Sparkles } from "lucide-react";
 import { useClientRegister } from "../../hooks/useClientRegister";
 
-const registerSchema = z
-  .object({
-    name: z.string().min(3, "El nombre debe tener al menos 3 caracteres"),
-    email: z.string().email("Email inválido"),
-    phone: z.string().min(9, "Teléfono inválido"),
-    password: z
-      .string()
-      .min(6, "La contraseña debe tener al menos 6 caracteres"),
-    confirmPassword: z.string(),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Las contraseñas no coinciden",
-    path: ["confirmPassword"],
-  });
+//mejora con contraseña
+// const registerSchema = z
+//   .object({
+//     name: z.string().min(3, "El nombre debe tener al menos 3 caracteres"),
+//     email: z.string().email("Email inválido"),
+//     phone: z.string().min(9, "Teléfono inválido"),
+//     password: z
+//       .string()
+//       .min(6, "La contraseña debe tener al menos 6 caracteres"),
+//     confirmPassword: z.string(),
+//   })
+//   .refine((data) => data.password === data.confirmPassword, {
+//     message: "Las contraseñas no coinciden",
+//     path: ["confirmPassword"],
+//   });
+const registerSchema = z.object({
+  name: z.string().min(3, "El nombre debe tener al menos 3 caracteres"),
+  email: z.string().email("Email inválido"),
+  phone: z.string().min(9, "Teléfono inválido"),
+});
 
 type RegisterForm = z.infer<typeof registerSchema>;
 
@@ -53,12 +59,21 @@ export function ClientRegistrationForm({
     resolver: zodResolver(registerSchema),
   });
 
+  // mejora enviando la contraseña
+  // const onSubmit = async (data: RegisterForm) => {
+  //   const { confirmPassword, ...rest } = data;
+  //   await registerMutation.mutateAsync({
+  //     dni,
+  //     companyCode,
+  //     ...rest,
+  //   });
+  //   onSuccess();
+  // };
   const onSubmit = async (data: RegisterForm) => {
-    const { confirmPassword, ...rest } = data;
     await registerMutation.mutateAsync({
       dni,
       companyCode,
-      ...rest,
+      ...data,
     });
     onSuccess();
   };
@@ -119,6 +134,8 @@ export function ClientRegistrationForm({
             )}
           </div>
 
+          {/*
+          mejora para registrar contraseña
           <div className="space-y-2">
             <Label htmlFor="password">Contraseña</Label>
             <Input
@@ -147,7 +164,7 @@ export function ClientRegistrationForm({
                 {errors.confirmPassword.message}
               </p>
             )}
-          </div>
+          </div> */}
 
           <Button
             type="submit"
