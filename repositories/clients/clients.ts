@@ -3,16 +3,17 @@
  * PUBLIC endpoint for QR codes + Admin endpoints for client management
  */
 
-import axios from 'axios';
-import { apiClient } from '@/lib/api-client';
-import { ClientError } from './types';
+import axios from "axios";
+import { apiClient } from "@/lib/api-client";
+import { ClientError } from "./types";
 import type {
   Client,
   ClientPublicResponse,
   RegisterClientDto,
   CompleteProfileDto,
   CompleteProfileResponse,
-} from './types';
+  ClientCompany,
+} from "./types";
 
 // ============================================================================
 // PUBLIC ENDPOINTS (No Auth Required)
@@ -21,13 +22,13 @@ import type {
 /**
  * Get client with rewards for public view (QR code)
  * NO AUTHENTICATION REQUIRED - Public endpoint
- * 
+ *
  * @param dni - Client DNI
  * @param companyCode - Company code from QR parameter
  */
 export async function getClientPublic(
   dni: string,
-  companyCode: string
+  companyCode: string,
 ): Promise<ClientPublicResponse> {
   try {
     const { data } = await axios.get<ClientPublicResponse>(
@@ -35,25 +36,21 @@ export async function getClientPublic(
       {
         params: { companyCode },
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
-      }
+      },
     );
     return data;
   } catch (error: any) {
     const status = error.response?.status;
     const message =
       status === 400
-        ? 'Código de empresa inválido'
+        ? "Código de empresa inválido"
         : status === 404
-        ? 'Empresa no encontrada'
-        : 'Error al consultar cliente';
+          ? "Empresa no encontrada"
+          : "Error al consultar cliente";
 
-    throw new ClientError(
-      message,
-      status || 500,
-      error.response?.data
-    );
+    throw new ClientError(message, status || 500, error.response?.data);
   }
 }
 
@@ -61,25 +58,23 @@ export async function getClientPublic(
  * Register a new client (public endpoint)
  * NO AUTHENTICATION REQUIRED
  */
-export async function registerClient(
-  dto: RegisterClientDto
-): Promise<Client> {
+export async function registerClient(dto: RegisterClientDto): Promise<Client> {
   try {
     const { data } = await axios.post<Client>(
       `${process.env.NEXT_PUBLIC_API_URL}/clients`,
       dto,
       {
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
-      }
+      },
     );
     return data;
   } catch (error: any) {
     throw new ClientError(
-      'Error al registrar cliente',
+      "Error al registrar cliente",
       error.response?.status || 500,
-      error.response?.data
+      error.response?.data,
     );
   }
 }
@@ -90,7 +85,7 @@ export async function registerClient(
  * NO AUTHENTICATION REQUIRED
  */
 export async function completeProfile(
-  dto: CompleteProfileDto
+  dto: CompleteProfileDto,
 ): Promise<CompleteProfileResponse> {
   try {
     const { data } = await axios.post<CompleteProfileResponse>(
@@ -98,21 +93,21 @@ export async function completeProfile(
       dto,
       {
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
-      }
+      },
     );
     return data;
   } catch (error: any) {
     const message =
       error.response?.status === 404
-        ? 'Cliente no encontrado o perfil ya completo'
-        : 'Error al completar perfil';
+        ? "Cliente no relacionado a esta empresa"
+        : "Error al completar perfil";
 
     throw new ClientError(
       message,
       error.response?.status || 500,
-      error.response?.data
+      error.response?.data,
     );
   }
 }
@@ -124,14 +119,14 @@ export async function completeProfile(
 /**
  * Get all clients for the company (admin only)
  */
-export async function getClients(): Promise<Client[]> {
+export async function getClients(): Promise<ClientCompany[]> {
   try {
-    const { data } = await apiClient.get<Client[]>('/clients');
+    const { data } = await apiClient.get<ClientCompany[]>("/client-companies");
     return data;
   } catch (error: any) {
     throw new ClientError(
-      'Error al cargar clientes',
-      error.response?.status || 500
+      "Error al cargar clientes",
+      error.response?.status || 500,
     );
   }
 }
@@ -145,8 +140,8 @@ export async function getClientByDni(dni: string): Promise<Client> {
     return data;
   } catch (error: any) {
     throw new ClientError(
-      'Cliente no encontrado',
-      error.response?.status || 404
+      "Cliente no encontrado",
+      error.response?.status || 404,
     );
   }
 }

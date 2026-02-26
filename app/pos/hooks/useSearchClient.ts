@@ -11,6 +11,7 @@ export function useSearchClient() {
       const data = await getClientPublic(dni, companyCode!);
       return {
         exists: data.exists,
+        hasRelation: data.hasRelation,
         dni: data.dni,
         name: data.name || `Cliente ${data.dni}`,
         status: data.status,

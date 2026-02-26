@@ -10,19 +10,21 @@ import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Search, User, UserPlus, Wallet } from "lucide-react";
+import { AlertTriangle, Search, User, UserPlus, Wallet } from "lucide-react";
 import type { ClientSearchResult } from "../types";
 
 interface ClientSearchCardProps {
   onClientFound: (client: ClientSearchResult) => void;
   onSearch: (dni: string) => Promise<ClientSearchResult>;
   isLoading?: boolean;
+  mode?: "earn" | "redeem";
 }
 
 export function ClientSearchCard({
   onClientFound,
   onSearch,
   isLoading = false,
+  mode = "earn",
 }: ClientSearchCardProps) {
   const [dni, setDni] = useState("");
   const [client, setClient] = useState<ClientSearchResult | null>(null);
@@ -38,6 +40,10 @@ export function ClientSearchCard({
     try {
       const result = await onSearch(dni);
       setClient(result);
+      // En redeem, si no tiene relación NO notificamos al padre (no habilitamos el formulario)
+      if (mode === "redeem" && (!result.exists || !result.hasRelation)) {
+        return;
+      }
       onClientFound(result);
     } catch (err: any) {
       setError(err.message || "Error al buscar cliente");
@@ -50,7 +56,6 @@ export function ClientSearchCard({
     setClient(null);
     setError("");
   };
-
   return (
     <Card className="p-6">
       <div className="space-y-4">
@@ -84,8 +89,8 @@ export function ClientSearchCard({
           </Button>
         </div>
 
-        {/* Client Display - Existing Client */}
-        {client?.exists && (
+        {/* CASO 1: Cliente existe Y tiene relación con la empresa */}
+        {client?.exists && client?.hasRelation && (
           <div className="bg-primary/5 border border-primary/20 rounded-lg p-4">
             <div className="flex items-start justify-between">
               <div className="flex items-center gap-3">
@@ -116,7 +121,7 @@ export function ClientSearchCard({
             {client.status === "PENDING" && (
               <div className="mt-3 bg-yellow-50 border border-yellow-200 rounded px-3 py-2">
                 <p className="text-yellow-700 text-sm">
-                  Cliente pendiente de completar perfil
+                  Datos pendientes por cargar
                 </p>
               </div>
             )}
@@ -131,21 +136,88 @@ export function ClientSearchCard({
             </Button>
           </div>
         )}
-
-        {/* Client Display - New Client (not found) */}
-        {client && !client.exists && (
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+        {/* CASO 2: Cliente existe PERO no tiene relación con esta empresa */}
+        {client?.exists && !client?.hasRelation && (
+          <div
+            className={
+              mode === "earn"
+                ? "bg-blue-50 border border-blue-200 rounded-lg p-4"
+                : "bg-red-50 border border-red-200 rounded-lg p-4"
+            }
+          >
             <div className="flex items-center gap-3">
-              <div className="h-12 w-12 rounded-full bg-blue-500 flex items-center justify-center">
-                <UserPlus className="h-6 w-6 text-white" />
+              <div
+                className={`h-12 w-12 rounded-full flex items-center justify-center ${
+                  mode === "earn" ? "bg-blue-500" : "bg-red-400"
+                }`}
+              >
+                {mode === "earn" ? (
+                  <UserPlus className="h-6 w-6 text-white" />
+                ) : (
+                  <AlertTriangle className="h-6 w-6 text-white" />
+                )}
               </div>
               <div>
-                <h3 className="font-semibold text-lg">Cliente nuevo</h3>
+                <h3 className="font-semibold text-lg">{client.name}</h3>
                 <p className="text-muted-foreground text-sm">
                   DNI: {client.dni}
                 </p>
-                <p className="text-blue-600 text-sm mt-1">
-                  Se registrará automáticamente al procesar la venta
+                <p
+                  className={`text-sm mt-1 ${
+                    mode === "earn" ? "text-blue-600" : "text-red-600"
+                  }`}
+                >
+                  {mode === "earn"
+                    ? "El cliente tiene cuenta pero no está relacionado a esta empresa. Se creará la relación al procesar la venta."
+                    : "Este cliente no tiene puntos en esta empresa."}
+                </p>
+              </div>
+            </div>
+
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleClear}
+              className="mt-3"
+            >
+              Buscar otro cliente
+            </Button>
+          </div>
+        )}
+        {/* CASO 3: Cliente no existe en absoluto */}
+        {client && !client.exists && (
+          <div
+            className={
+              mode === "earn"
+                ? "bg-blue-50 border border-blue-200 rounded-lg p-4"
+                : "bg-red-50 border border-red-200 rounded-lg p-4"
+            }
+          >
+            <div className="flex items-center gap-3">
+              <div
+                className={`h-12 w-12 rounded-full flex items-center justify-center ${
+                  mode === "earn" ? "bg-blue-500" : "bg-red-400"
+                }`}
+              >
+                {mode === "earn" ? (
+                  <UserPlus className="h-6 w-6 text-white" />
+                ) : (
+                  <AlertTriangle className="h-6 w-6 text-white" />
+                )}
+              </div>
+              <div>
+                <h3 className="font-semibold text-lg">
+                  {mode === "earn" ? "Cliente nuevo" : "Cliente no encontrado"}
+                </h3>
+                <p className="text-muted-foreground text-sm">
+                  DNI: {client.dni}
+                </p>
+                <p
+                  className={`text-sm mt-1 ${mode === "earn" ? "text-blue-600" : "text-red-600"}`}
+                >
+                  {mode === "earn"
+                    ? "Se registrará automáticamente al procesar la venta"
+                    : "Este cliente no existe en el sistema."}
                 </p>
               </div>
             </div>
