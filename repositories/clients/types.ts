@@ -90,6 +90,7 @@ export interface CompleteProfileDto {
   email: string;
   phone?: string;
   companyCode: string; // Required to identify the company
+  // password: string; //mejora con contraseña
 }
 
 export interface CompleteProfileResponse {

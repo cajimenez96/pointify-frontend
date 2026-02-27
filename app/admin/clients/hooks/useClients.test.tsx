@@ -29,8 +29,32 @@ describe("useClients Hook", () => {
 
   it("should return clients data on success", async () => {
     const mockClients = [
-      { _id: "1", name: "Client 1", dni: "123", status: "ACTIVE" },
-      { _id: "2", name: "Client 2", dni: "456", status: "PENDING" },
+      {
+        _id: "cc1",
+        companyId: "company-1",
+        currentPoints: 100,
+        totalAccumulated: 200,
+        createdAt: "2026-01-01T00:00:00Z",
+        clientId: {
+          _id: "1",
+          dni: "123",
+          name: "Client 1",
+          status: "ACTIVE",
+        },
+      },
+      {
+        _id: "cc2",
+        companyId: "company-1",
+        currentPoints: 0,
+        totalAccumulated: 0,
+        createdAt: "2026-01-01T00:00:00Z",
+        clientId: {
+          _id: "2",
+          dni: "456",
+          name: "Client 2",
+          status: "PENDING",
+        },
+      },
     ];
 
     (getClients as jest.Mock).mockResolvedValue(mockClients);
@@ -45,7 +69,36 @@ describe("useClients Hook", () => {
     // Wait for data
     await waitFor(() => expect(result.current.isLoading).toBe(false));
 
-    expect(result.current.clients).toEqual(mockClients);
+    expect(result.current.clients).toEqual([
+      {
+        _id: "1",
+        companyId: "company-1",
+        dni: "123",
+        name: "Client 1",
+        email: undefined,
+        phone: undefined,
+        currentPoints: 100,
+        totalAccumulated: 200,
+        status: "ACTIVE",
+        isActive: true,
+        createdAt: "2026-01-01T00:00:00Z",
+        updatedAt: undefined,
+      },
+      {
+        _id: "2",
+        companyId: "company-1",
+        dni: "456",
+        name: "Client 2",
+        email: undefined,
+        phone: undefined,
+        currentPoints: 0,
+        totalAccumulated: 0,
+        status: "PENDING",
+        isActive: false,
+        createdAt: "2026-01-01T00:00:00Z",
+        updatedAt: undefined,
+      },
+    ]);
     expect(result.current.error).toBeNull();
   });
 

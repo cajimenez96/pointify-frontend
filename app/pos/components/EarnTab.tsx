@@ -91,6 +91,7 @@ export function EarnTab() {
         onClientFound={handleClientFound}
         onSearch={searchMutation.mutateAsync}
         isLoading={searchMutation.isPending}
+        mode="earn"
       />
 
       {/* Sale Form - Shown when client is found (exists or not) */}
