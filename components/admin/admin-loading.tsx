@@ -1,6 +1,12 @@
-'use client';
+"use client";
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 type AdminLoadingProps = {
   title?: string;
@@ -8,8 +14,8 @@ type AdminLoadingProps = {
 };
 
 export const AdminLoading = ({
-  title = 'Cargando...',
-  description = 'Por favor espera un momento.',
+  title = "Cargando...",
+  description = "Por favor espera un momento.",
 }: AdminLoadingProps) => {
   return (
     <div className="flex items-center justify-center min-h-[24rem]">
@@ -27,4 +33,3 @@ export const AdminLoading = ({
     </div>
   );
 };
-

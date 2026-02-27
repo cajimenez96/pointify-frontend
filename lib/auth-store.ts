@@ -1,64 +1,90 @@
 import { create } from 'zustand';
-import apiClient from './api-client';
+import { persist } from 'zustand/middleware';
 
-interface User {
-  userId: string;
-  dni: string;
-  role: 'admin' | 'cashier';
-  name?: string;
+// Tipos de usuario
+export interface User {
+  id: string;
+  username: string;
+  name: string;
+  role: 'superadmin' | 'admin' | 'cashier';
+  isSuperAdmin?: boolean;
+  companyCode?: string;
+  companyName?: string;
 }
 
-interface AuthStore {
+interface AuthState {
   user: User | null;
-  token: string | null;
+  accessToken: string | null;
+  isAuthenticated: boolean;
   isLoading: boolean;
-  login: (dni: string, password: string) => Promise<void>;
+}
+
+interface AuthActions {
   logout: () => void;
   initializeAuth: () => void;
+  setAuth: (user: User, accessToken: string) => void;
+  clearAuth: () => void;
 }
 
-export const useAuthStore = create<AuthStore>((set) => ({
-  user: null,
-  token: null,
-  isLoading: true,
+type AuthStore = AuthState & AuthActions;
 
-  initializeAuth: () => {
-    if (typeof window !== 'undefined') {
-      const token = localStorage.getItem('token');
-      const userStr = localStorage.getItem('user');
-      
-      if (token && userStr) {
-        try {
-          const user = JSON.parse(userStr);
-          set({ user, token, isLoading: false });
-        } catch (e) {
-          localStorage.removeItem('token');
-          localStorage.removeItem('user');
-          set({ user: null, token: null, isLoading: false });
+export const useAuthStore = create<AuthStore>()(
+  persist(
+    (set, get) => ({
+      // Estado inicial
+      user: null,
+      accessToken: null,
+      isAuthenticated: false,
+      isLoading: true,
+
+      // Inicializar autenticación (se llama al cargar la app)
+      initializeAuth: () => {
+        const state = get();
+
+        if (state.user && state.accessToken) {
+          set({ isAuthenticated: true, isLoading: false });
+        } else {
+          set({ isAuthenticated: false, isLoading: false });
         }
-      } else {
-        set({ isLoading: false });
-      }
+      },
+
+      // Establecer autenticación (llamado por hooks de login)
+      setAuth: (user: User, accessToken: string) => {
+        set({
+          user,
+          accessToken,
+          isAuthenticated: true,
+        });
+      },
+
+      // Limpiar autenticación
+      clearAuth: () => {
+        set({
+          user: null,
+          accessToken: null,
+          isAuthenticated: false,
+        });
+      },
+
+      // Logout
+      logout: () => {
+        set({
+          user: null,
+          accessToken: null,
+          isAuthenticated: false,
+        });
+
+        if (typeof window !== 'undefined') {
+          window.location.href = '/';
+        }
+      },
+    }),
+    {
+      name: 'pointify-auth-storage',
+      partialize: (state) => ({
+        user: state.user,
+        accessToken: state.accessToken,
+      }),
     }
-  },
-
-  login: async (dni: string, password: string) => {
-    const res = await apiClient.post('/auth/login', {
-      dni,
-      password,
-    });
-    
-    const { access_token, user } = res.data;
-    
-    localStorage.setItem('token', access_token);
-    localStorage.setItem('user', JSON.stringify(user));
-    
-    set({ user, token: access_token });
-  },
-
-  logout: () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    set({ user: null, token: null });
-  },
-}));
+  )
+);
